@@ -40,7 +40,7 @@ class EducationPage(BasePage):
     }
 
     ONLINE_FORMS_LINKS = {
-        "יפוי כוח": "https://www.rishonlezion.muni.il/Residents/Education/registrationall/Documents/טופס%20ייפוי%20כח%20תשפו%20.pdf", 
+        "יפוי כח": "https://www.rishonlezion.muni.il/Residents/Education/registrationall/Documents/טופס%20ייפוי%20כח%20תשפו%20.pdf", 
         "כתובת מגורים בעיר": "https://www.rishonlezion.muni.il/Residents/Education/registrationall/Documents/תצהיר%20מגורים%20תשפו%20%20.pdf",      
         "להורים": "https://www.rishonlezion.muni.il/Residents/Education/registrationall/Documents/תצהיר%20הורים%20עצמאיים%20תשפו%20%20.pdf",
         "לימודי חוץ": "https://www.rishonlezion.muni.il/Residents/Education/registrationall/Documents/טופס%20תצהיר%20בקשה%20ללימודי%20חוץ%20תשפו%20.pdf" ,

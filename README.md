@@ -84,3 +84,4 @@ Generate and serve the Allure HTML report:
 Bash
 
 %AppData%\npm\allure serve ./allure-results
+allure serve ./allure-results

@@ -34,6 +34,8 @@ def driver():
     """ניהול הדפדפן: פתיחה וסגירה אוטומטית"""
     driver = webdriver.Chrome()
     driver.maximize_window()
+    # יצירת מונה בתוך האובייקט של הדרייבר כדי שנוכל לגשת אליו מכל מקום
+    driver.broken_links_list = [] 
     yield driver
     driver.quit() # יסגור את הדפדפן גם אם הטסט נכשל
 
@@ -165,3 +167,17 @@ def test_full_system_flow(driver, secrets):
             business.run_tab_2_external_link_tests()
             business.navigate_to_tab_3()
             business.run_tab_3_external_link_tests()
+
+    # ==========================================
+    # Allure Final Summary - הוספת סיכום הלינקים
+    # ==========================================
+    broken_links = getattr(driver, 'broken_links_list', [])
+    count = len(broken_links)
+
+    if count > 0:
+        # שינוי שם הטסט בדוח כדי שיקפוץ לעין שיש בעיות
+        allure.dynamic.title(f"Full Flow - PASSED (with {count} broken links)")
+        with allure.step(f"🚨 Summary: Found {count} broken links"):
+            allure.attach("\n".join(broken_links), name="List of Broken Links", attachment_type=allure.attachment_type.TEXT)
+    else:
+        allure.dynamic.title("Full Flow - PASSED (All links are OK)")

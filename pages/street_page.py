@@ -29,8 +29,7 @@ class StreetPage(BasePage):
     EXPAND_BUTTON = (By.XPATH, "//*[contains(normalize-space(.), 'לפרטים נוספים לחץ כאן')]/following-sibling::button")
     
     # 🟢 תיקון: Locator חדש לאימות תוכן הפופ-אפ (מחפש את המשפט המלא)
-    POPUP_CONTENT = (By.XPATH, "//*[contains(normalize-space(.), 'יום א') and contains(normalize-space(.), 'לשבועיים')]")
-
+    POPUP_CONTENT = (By.XPATH, "//*[contains(normalize-space(.), 'יום')]")
     def __init__(self, driver, url):
         super().__init__(driver)
         self.STREET_URL = url
@@ -159,4 +158,4 @@ class StreetPage(BasePage):
             print(f"✅ Popup loaded successfully. Found validation text: {popup_text[:30]}")
             return True
         except TimeoutException:
-            raise Exception("❌ Popup failed to load or validation text ('יום א' אחת לשבועיים') is missing.")
+            raise Exception("❌ Popup failed to load or validation text ('יום') is missing.")

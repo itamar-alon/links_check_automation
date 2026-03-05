@@ -17,16 +17,32 @@ class BasePage:
         return WebDriverWait(self.driver, timeout if timeout is not None else self.DEFAULT_WAIT_TIME)
 
     def validate_link_status(self, url):
-        """ בודק שהקישור מחזיר סטטוס 200 ללא טעינת הדף בדפדפן. """
+        """ בודק שהקישור מחזיר סטטוס 200 ללא טעינת הדף בדפדפן ומעדכן רשימת לינקים שבורים. """
         try:
             # שימוש ב-HEAD למהירות מירבית
             response = requests.head(url, allow_redirects=True, timeout=5)
             if response.status_code >= 400: # אם HEAD נכשל, ננסה GET
                 response = requests.get(url, allow_redirects=True, timeout=5, stream=True)
             
-            return response.status_code == 200, response.status_code
+            is_success = response.status_code == 200
+            
+            # עדכון רשימת הלינקים השבורים בדרייבר אם הסטטוס אינו 200
+            if not is_success:
+                self._record_broken_link(url, response.status_code)
+                
+            return is_success, response.status_code
+            
         except Exception as e:
+            # במקרה של שגיאת התחברות (Timeout, DNS וכו')
+            self._record_broken_link(url, str(e))
             return False, str(e)
+
+    def _record_broken_link(self, url, reason):
+        """ פונקציית עזר פנימית לרישום הלינק השבור בדרייבר """
+        if hasattr(self.driver, 'broken_links_list'):
+            entry = f"URL: {url} | Reason/Status: {reason}"
+            if entry not in self.driver.broken_links_list:
+                self.driver.broken_links_list.append(entry)
 
     def go_to_url(self, url):
         self.driver.get(url)
