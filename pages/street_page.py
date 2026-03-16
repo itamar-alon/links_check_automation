@@ -5,6 +5,9 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 import time
 from .base_page import BasePage
+import logging
+
+logger = logging.getLogger("SystemFlowLogger")
 
 class StreetPage(BasePage):
     """
@@ -65,11 +68,11 @@ class StreetPage(BasePage):
         # 2. Wait for the critical element: "מידע על רחוב" text
         try:
             self._wait_for_presence(self.PAGE_LOAD_VALIDATOR, timeout=15)
-            print(">>> ✅ Container title 'מידע על רחוב' found. DOM is stable.")
+            logger.info(">>> ✅ Container title 'מידע על רחוב' found. DOM is stable.")
         except TimeoutException:
             raise TimeoutException("❌ Dynamic load failed: 'מידע על רחוב' title did not appear.")
         
-        print(f">>> Navigated to Street Page: {self.STREET_URL}")
+        logger.info(f">>> Navigated to Street Page: {self.STREET_URL}")
 
     def get_page_title(self):
         """ Returns the main title text for validation. """
@@ -83,7 +86,7 @@ class StreetPage(BasePage):
     def search_and_verify_table(self):
         """ Performs a street search and verifies data returned to the table. """
         street_name = self.TEST_STREET_NAME
-        print(f"\n--- Starting street search test: {street_name} ---")
+        logger.info(f"\n--- Starting street search test: {street_name} ---")
 
         # 1. Type street name and trigger the search
         input_element = self._wait_for_clickable(self.STREET_NAME_INPUT_LOCATOR)
@@ -103,12 +106,12 @@ class StreetPage(BasePage):
             # 💡 שינוי: לחיצה באמצעות JavaScript
             self.driver.execute_script("arguments[0].click();", suggestion_element)
             
-            print(">>> ✅ Street suggestion clicked successfully using JS. Initiating AJAX.")
+            logger.info(">>> ✅ Street suggestion clicked successfully using JS. Initiating AJAX.")
         
         except Exception as e:
             # ⚠️ Fallback: אם לחיצת ה-JS נכשלה, ננסה ללחוץ ENTER
             try:
-                print(">>> ⚠️ Click failed. Trying Keys.ENTER as fallback...")
+                logger.warning(">>> ⚠️ Click failed. Trying Keys.ENTER as fallback...")
                 input_element.send_keys(Keys.ENTER)
             except Exception as enter_e:
                 raise Exception(f"❌ Critical failure clicking dropdown suggestion or pressing ENTER: Original Error: {e}, Fallback Error: {enter_e}")
@@ -124,7 +127,7 @@ class StreetPage(BasePage):
             
             validation_text = data_element_found.text
             
-            print(f"✅ Data returned to table successfully. Found validation text: {validation_text[:50]}...")
+            logger.info(f"✅ Data returned to table successfully. Found validation text: {validation_text[:50]}...")
             return True
             
         except TimeoutException:
@@ -134,7 +137,7 @@ class StreetPage(BasePage):
 
     def expand_and_verify_popup(self):
         """ Clicks the plus button and verifies the popup content loaded. """
-        print("\n--- Starting popup expansion test ---")
+        logger.info("\n--- Starting popup expansion test ---")
         
         # 1. Click the plus button
         try:
@@ -144,7 +147,7 @@ class StreetPage(BasePage):
             # 💡 לחיצה באמצעות JavaScript (יציבות גבוהה יותר)
             self.driver.execute_script("arguments[0].click();", plus_button)
 
-            print(">>> Plus button clicked using JS.")
+            logger.info(">>> Plus button clicked using JS.")
         except Exception as e:
             # הדפסת ה-Locator הנוכחי כדי לעזור למצוא את הבעיה
             raise Exception(f"❌ Failed to click the expand button. Check Locator: {self.EXPAND_BUTTON}. Error: {e}")
@@ -155,7 +158,7 @@ class StreetPage(BasePage):
             self._wait_for_presence(self.POPUP_CONTENT, timeout=5)
             popup_text = self.driver.find_element(*self.POPUP_CONTENT).text
             
-            print(f"✅ Popup loaded successfully. Found validation text: {popup_text[:30]}")
+            logger.info(f"✅ Popup loaded successfully. Found validation text: {popup_text[:30]}")
             return True
         except TimeoutException:
             raise Exception("❌ Popup failed to load or validation text ('יום') is missing.")

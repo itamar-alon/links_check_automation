@@ -7,6 +7,9 @@ import os
 from datetime import datetime
 from urllib.parse import unquote
 from .base_page import BasePage
+import logging
+
+logger = logging.getLogger("SystemFlowLogger")
 
 class ParkingPage(BasePage):
     """
@@ -52,7 +55,7 @@ class ParkingPage(BasePage):
 
     def open_parking_page(self):
         self.go_to_url(self.PARKING_URL)
-        print(f">>> Navigated to Parking page: {self.PARKING_URL}")
+        logger.info(f">>> Navigated to Parking page: {self.PARKING_URL}")
 
     def get_page_title(self):
         title_element = self.get_element(self.PAGE_TITLE)
@@ -69,13 +72,13 @@ class ParkingPage(BasePage):
             filename = f"screenshots/error_parking_{safe_name}_{timestamp}.png"
             
             self.driver.save_screenshot(filename)
-            print(f"📸 Screenshot saved: {filename}")
+            logger.info(f"📸 Screenshot saved: {filename}")
         except Exception as e:
-            print(f"⚠️ Failed to save screenshot: {e}")
+            logger.warning(f"⚠️ Failed to save screenshot: {e}")
 
     # 🟢 הבדיקה המהירה (HREF Check)
     def _verify_external_link(self, link_text, expected_url_part):
-        print(f"Testing: {link_text}")
+        logger.info(f"Testing: {link_text}")
         
         # 1. חיפוש האלמנט
         locator = (By.XPATH, self.GENERIC_LINK_XPATH.format(link_text))
@@ -85,7 +88,7 @@ class ParkingPage(BasePage):
                 EC.presence_of_element_located(locator)
             )
         except TimeoutException:
-            print(f"❌ Link error: '{link_text}' (Element not found)")
+            logger.error(f"❌ Link error: '{link_text}' (Element not found)")
             self._take_error_screenshot(link_text)
             return
 
@@ -100,7 +103,7 @@ class ParkingPage(BasePage):
                 decoded_expected = unquote(expected_url_part)
                 
                 if decoded_expected in decoded_href:
-                    print(f"✅ Passed: {link_text}")
+                    logger.info(f"✅ Passed: {link_text}")
                     return 
 
             # 3. Fallback: לחיצה (אם ה-HREF לא תואם או חסר)
@@ -117,14 +120,14 @@ class ParkingPage(BasePage):
             expected_decoded = unquote(expected_url_part)
 
             if expected_decoded in current_url:
-                print(f"✅ Passed: {link_text}")
+                logger.info(f"✅ Passed: {link_text}")
             else:
-                print(f"⚠️ Warning: {link_text} opened but URL differs.\n   Expected: ...{expected_decoded[-20:]}\n   Got:      ...{current_url[-20:]}")
+                logger.warning(f"⚠️ Warning: {link_text} opened but URL differs.\n   Expected: ...{expected_decoded[-20:]}\n   Got:      ...{current_url[-20:]}")
 
             self.driver.close()
 
         except Exception as e:
-            print(f"❌ Link error: '{link_text}' (Failed to open/verify). Error: {e}")
+            logger.error(f"❌ Link error: '{link_text}' (Failed to open/verify). Error: {e}")
             self._take_error_screenshot(link_text)
         
         finally:
@@ -134,24 +137,24 @@ class ParkingPage(BasePage):
     # --- פונקציות ניווט והרצה ---
 
     def run_tab_1_external_link_tests(self):
-        print("\n--- Starting Fast Link Check (Tab 1 - Fines) ---")
+        logger.info("\n--- Starting Fast Link Check (Tab 1 - Fines) ---")
         for link_name, url_part in self.TAB_1_EXTERNAL_LINKS.items():
             self._verify_external_link(link_name, url_part)
 
     def navigate_to_tab_3(self):
-        print("\n--- Navigating to Tab 3: תווי חניה ---")
+        logger.info("\n--- Navigating to Tab 3: תווי חניה ---")
         try:
             tab = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(self.TAB_3_LOCATOR))
             self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", tab)
             time.sleep(0.5)
             self.driver.execute_script("arguments[0].click();", tab)
-            print(">>> Switched to Tab 3.")
+            logger.info(">>> Switched to Tab 3.")
             time.sleep(2)
         except Exception as e:
-            print(f"❌ Failed to switch to Tab 3: {e}")
+            logger.error(f"❌ Failed to switch to Tab 3: {e}")
             self._take_error_screenshot("tab_switch_fail")
 
     def run_tab_3_external_link_tests(self):
-        print("\n--- Starting Fast Link Check (Tab 3 - Parking Permits) ---")
+        logger.info("\n--- Starting Fast Link Check (Tab 3 - Parking Permits) ---")
         for link_name, url_part in self.TAB_3_EXTERNAL_LINKS.items():
             self._verify_external_link(link_name, url_part)

@@ -8,6 +8,9 @@ import os
 from datetime import datetime 
 from .base_page import BasePage
 from .login_page import LoginPage 
+import logging
+
+logger = logging.getLogger("SystemFlowLogger")
 
 class EducationPage(BasePage):
     """
@@ -106,7 +109,7 @@ class EducationPage(BasePage):
 
     def open_education_page(self):
         self.go_to_url(self.EDUCATION_URL)
-        print(f">>> Navigated to Education Interface: {self.EDUCATION_URL}")
+        logger.info(f">>> Navigated to Education Interface: {self.EDUCATION_URL}")
 
     def get_page_title(self):
         element = WebDriverWait(self.driver, self.DEFAULT_TIMEOUT).until(
@@ -117,27 +120,27 @@ class EducationPage(BasePage):
     # --- Methods ---
 
     def verify_education_content(self):
-        print("\n--- Starting Content Validation ---")
+        logger.info("\n--- Starting Content Validation ---")
         try:
             WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(self.CONTENT_VALIDATOR))
-            print("✅ Education page content verified!")
+            logger.info("✅ Education page content verified!")
         except TimeoutException:
             raise Exception("❌ Validation text 'הנרטיב' not found.")
 
     def run_default_tab_external_link_tests(self):
-        print("\n--- Running Default Tab External Links ---")
+        logger.info("\n--- Running Default Tab External Links ---")
         self.verify_links_from_dictionary(self.DEFAULT_TAB_LINKS, "Default Tab")
 
     def verify_links_from_dictionary(self, links_dict, context_name="Unknown Tab"):
-        print(f"\n--- Running Link Tests for: {context_name} ---")
+        logger.info(f"\n--- Running Link Tests for: {context_name} ---")
         if not links_dict:
-            print(f"⚠️ Warning: No links defined for {context_name}.")
+            logger.warning(f"⚠️ Warning: No links defined for {context_name}.")
             return
         for text, url in links_dict.items():
             self._verify_external_link(text, url)
 
     def navigate_to_side_tab(self, tab_name):
-        print(f"\n--- Navigating to Side Tab: {tab_name} ---")
+        logger.info(f"\n--- Navigating to Side Tab: {tab_name} ---")
         self.driver.switch_to.default_content()
 
         if tab_name == "תיק תלמיד":
@@ -159,7 +162,7 @@ class EducationPage(BasePage):
                     time.sleep(0.5)
                     try: target_element.click()
                     except: self.driver.execute_script("arguments[0].click();", target_element)
-                    print(f"✅ Successfully navigated to: {tab_name}")
+                    logger.info(f"✅ Successfully navigated to: {tab_name}")
                     time.sleep(2)
                     return
                 attempts += 1; time.sleep(1)
@@ -167,7 +170,7 @@ class EducationPage(BasePage):
         raise Exception(f"❌ Failed to navigate to {tab_name}")
 
     def perform_student_login(self, user_id, user_password):
-        print(f"\n STARTING LOGIN FLOW via LoginPage")
+        logger.info(f"\n STARTING LOGIN FLOW via LoginPage")
         try:
             auth_btn = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(self.PRIVACY_GUARD_AUTH_BUTTON))
             auth_btn.click()
@@ -186,13 +189,13 @@ class EducationPage(BasePage):
         self.driver.switch_to.default_content()
         try:
             WebDriverWait(self.driver, 15).until(EC.invisibility_of_element_located(self.PRIVACY_GUARD_POPUP))
-            print("✅ Login successful! Modal closed.")
+            logger.info("✅ Login successful! Modal closed.")
             time.sleep(3)
             return True
         except: return False
 
     def navigate_to_online_forms_after_login(self):
-        print("\n--- Navigating to Internal Tab: טפסים מקוונים ---")
+        logger.info("\n--- Navigating to Internal Tab: טפסים מקוונים ---")
         try:
             elements = self.driver.find_elements(*self.INTERNAL_TAB_ONLINE_FORMS)
             visible_tab = None
@@ -205,11 +208,11 @@ class EducationPage(BasePage):
             self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", visible_tab)
             time.sleep(1)
             self.driver.execute_script("arguments[0].click();", visible_tab)
-            print("✅ Clicked 'Online Forms' tab.")
+            logger.info("✅ Clicked 'Online Forms' tab.")
             time.sleep(3)
             return True
         except Exception as e:
-            print(f"❌ Failed to click 'Online Forms' tab: {e}")
+            logger.error(f"❌ Failed to click 'Online Forms' tab: {e}")
             return False
 
     def run_online_forms_link_tests(self):
@@ -229,19 +232,19 @@ class EducationPage(BasePage):
             filename = f"screenshots/error_{safe_name}_{timestamp}.png"
             
             self.driver.save_screenshot(filename)
-            print(f"📸 Screenshot saved: {filename}")
+            logger.info(f"📸 Screenshot saved: {filename}")
         except Exception as e:
-            print(f"⚠️ Failed to save screenshot: {e}")
+            logger.warning(f"⚠️ Failed to save screenshot: {e}")
 
     def _verify_external_link(self, link_text, expected_url_part):
-        print(f"Testing: {link_text}")
+        logger.info(f"Testing: {link_text}")
         
         # 1. חיפוש האלמנט
         link_locator = (By.XPATH, f"//*[contains(@role, 'button') or self::a][contains(normalize-space(.), '{link_text}')]")
         try:
             el = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(link_locator))
         except:
-            print(f"❌ Link error: {link_text} (Element not found)")
+            logger.error(f"❌ Link error: {link_text} (Element not found)")
             self._take_error_screenshot(link_text) # 🟢 צילום מסך בכישלון מציאת כפתור
             return
 
@@ -256,7 +259,7 @@ class EducationPage(BasePage):
                 decoded_href = unquote(href)
                 decoded_expected = unquote(expected_url_part)
                 if decoded_expected in decoded_href:
-                    print(f"✅ Passed: {link_text}")
+                    logger.info(f"✅ Passed: {link_text}")
                     return
             
             # אם צריך ללחוץ
@@ -275,14 +278,14 @@ class EducationPage(BasePage):
             expected_decoded = unquote(expected_url_part)
 
             if expected_decoded in current_url:
-                print(f"✅ Passed: {link_text}")
+                logger.info(f"✅ Passed: {link_text}")
             else:
                  # אזהרה (Warning) לא מצלמת מסך, לפי הדרישה
-                 print(f"⚠️ Warning: {link_text} opened but URL differs.\n   Expected: ...{expected_decoded[-20:]}\n   Got:      ...{current_url[-20:]}")
+                 logger.warning(f"⚠️ Warning: {link_text} opened but URL differs.\n   Expected: ...{expected_decoded[-20:]}\n   Got:      ...{current_url[-20:]}")
             
             self.driver.close()
         except Exception:
-            print(f"❌ Link error: {link_text} (Click failed or window didn't open)")
+            logger.error(f"❌ Link error: {link_text} (Click failed or window didn't open)")
             self._take_error_screenshot(link_text) # 🟢 צילום מסך בכישלון לחיצה
         finally:
             try: self.driver.switch_to.window(orig_window)

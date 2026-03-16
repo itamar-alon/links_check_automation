@@ -75,6 +75,7 @@ Execute the Full System Test
 Run the comprehensive suite using Pytest:
 
 Bash
+pushd \\grafana\Rizone\Projects\links
 
 python -m pytest tests/test_full_flow.py --alluredir=./allure-results
 

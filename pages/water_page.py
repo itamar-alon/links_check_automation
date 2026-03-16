@@ -7,6 +7,9 @@ import os
 from datetime import datetime
 from urllib.parse import unquote
 from .base_page import BasePage
+import logging
+
+logger = logging.getLogger("SystemFlowLogger")
 
 class WaterPage(BasePage):
     """
@@ -78,7 +81,7 @@ class WaterPage(BasePage):
 
     # 🟢 הלוגיקה המהירה (HREF first, Click fallback)
     def _verify_external_link(self, link_text, expected_url_part):
-        print(f"Testing: {link_text}...", end=" ", flush=True) 
+        logger.info(f"Testing: {link_text}...") 
         
         locator = (By.XPATH, self.GENERIC_LINK_XPATH.format(link_text))
         
@@ -87,7 +90,7 @@ class WaterPage(BasePage):
                 EC.presence_of_element_located(locator)
             )
         except TimeoutException:
-            print(f"❌ Not Found")
+            logger.error(f"❌ Not Found: {link_text}")
             self._take_error_screenshot(link_text)
             return
 
@@ -99,11 +102,11 @@ class WaterPage(BasePage):
 
         # 🚀 בדיקה מהירה
         if clean_expected in clean_href:
-            print(f"✅ OK (HREF)")
+            logger.info(f"✅ OK (HREF): {link_text}")
             return 
 
         # Fallback: לחיצה
-        print(f"⚠️ HREF mismatch, clicking...", end=" ")
+        logger.warning(f"⚠️ HREF mismatch for {link_text}, clicking...")
         
         orig_window = self.driver.current_window_handle
         try:
@@ -120,24 +123,24 @@ class WaterPage(BasePage):
             clean_current = current_url.replace("https://", "").replace("http://", "")
             
             if clean_expected in clean_current:
-                print(f"✅ OK (Clicked)")
+                logger.info(f"✅ OK (Clicked): {link_text}")
             else:
-                print(f"❌ URL Mismatch")
-                print(f"   Exp: {clean_expected[:30]}...")
-                print(f"   Got: {clean_current[:30]}...")
+                logger.error(f"❌ URL Mismatch for {link_text}")
+                logger.error(f"   Exp: ...{clean_expected[-30:]}")
+                logger.error(f"   Got: ...{clean_current[-30:]}")
                 self._take_error_screenshot(link_text)
 
         except Exception as e:
-            print(f"❌ Click Failed: {e}")
+            logger.error(f"❌ Click Failed for {link_text}: {e}")
             self.driver.switch_to.window(orig_window)
 
     # 🟢 פונקציות ניווט מעודכנות (עם הדפסה ברורה של שם הטאב)
     def navigate_to_tab_2(self):
-        print(f"\n--- Navigating to Tab 2: {self.TAB_BUTTON_NAME_2} ---")
+        logger.info(f"\n--- Navigating to Tab 2: {self.TAB_BUTTON_NAME_2} ---")
         self._switch_tab(self.TAB_2_LOCATOR)
 
     def navigate_to_tab_3(self):
-        print(f"\n--- Navigating to Tab 3: {self.TAB_BUTTON_NAME_3} ---")
+        logger.info(f"\n--- Navigating to Tab 3: {self.TAB_BUTTON_NAME_3} ---")
         self._switch_tab(self.TAB_3_LOCATOR)
 
     def _switch_tab(self, locator):
@@ -145,10 +148,10 @@ class WaterPage(BasePage):
             time.sleep(0.5) 
             tab = WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable(locator))
             self.driver.execute_script("arguments[0].click();", tab)
-            print(f">>> Switched successfully.")
+            logger.info(f">>> Switched successfully.")
             time.sleep(1.5)
         except Exception as e:
-            print(f"❌ Failed to switch tab: {e}")
+            logger.error(f"❌ Failed to switch tab: {e}")
             raise e
 
     def run_tab_1_external_link_tests(self):

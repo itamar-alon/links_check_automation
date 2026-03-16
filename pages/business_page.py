@@ -7,6 +7,9 @@ import os
 from datetime import datetime
 from urllib.parse import unquote
 from .base_page import BasePage
+import logging
+
+logger = logging.getLogger("SystemFlowLogger")
 
 class BusinessLicensePage(BasePage):
     """
@@ -61,7 +64,7 @@ class BusinessLicensePage(BasePage):
 
     def open_business_page(self):
         self.go_to_url(self.BUSINESS_URL)
-        print(f">>> Navigated to Business page: {self.BUSINESS_URL}")
+        logger.info(f">>> Navigated to Business page: {self.BUSINESS_URL}")
 
     def get_page_title(self):
         title_element = self.get_element(self.PAGE_TITLE)
@@ -76,13 +79,13 @@ class BusinessLicensePage(BasePage):
             safe_name = "".join([c if c.isalnum() else "_" for c in link_name])
             filename = f"screenshots/error_business_{safe_name}_{timestamp}.png"
             self.driver.save_screenshot(filename)
-            print(f"📸 Screenshot saved: {filename}")
+            logger.info(f"📸 Screenshot saved: {filename}")
         except Exception as e:
-            print(f"⚠️ Failed to save screenshot: {e}")
+            logger.warning(f"⚠️ Failed to save screenshot: {e}")
 
     # 🟢 בדיקה מהירה (HREF)
     def _verify_external_link(self, link_text, expected_url_part):
-        print(f"Testing: {link_text}")
+        logger.info(f"Testing: {link_text}")
         
         locator = (By.XPATH, self.GENERIC_LINK_XPATH.format(link_text))
         
@@ -91,7 +94,7 @@ class BusinessLicensePage(BasePage):
                 EC.presence_of_element_located(locator)
             )
         except TimeoutException:
-            print(f"❌ Link error: '{link_text}' (Element not found)")
+            logger.error(f"❌ Link error: '{link_text}' (Element not found)")
             self._take_error_screenshot(link_text)
             return
 
@@ -104,7 +107,7 @@ class BusinessLicensePage(BasePage):
                 decoded_href = unquote(href)
                 decoded_expected = unquote(expected_url_part)
                 if decoded_expected in decoded_href:
-                    print(f"✅ Passed (HREF check): {link_text}")
+                    logger.info(f"✅ Passed (HREF check): {link_text}")
                     return 
 
             # Fallback: Click
@@ -121,14 +124,14 @@ class BusinessLicensePage(BasePage):
             expected_decoded = unquote(expected_url_part)
 
             if expected_decoded in current_url:
-                print(f"✅ Passed: {link_text}")
+                logger.info(f"✅ Passed: {link_text}")
             else:
-                print(f"⚠️ Warning: {link_text} opened but URL differs.\n   Expected: ...{expected_decoded[-20:]}\n   Got:      ...{current_url[-20:]}")
+                logger.warning(f"⚠️ Warning: {link_text} opened but URL differs.\n   Expected: ...{expected_decoded[-20:]}\n   Got:      ...{current_url[-20:]}")
 
             self.driver.close()
 
         except Exception as e:
-            print(f"❌ Link error: '{link_text}' (Failed to open/verify). Error: {e}")
+            logger.error(f"❌ Link error: '{link_text}' (Failed to open/verify). Error: {e}")
             self._take_error_screenshot(link_text)
         
         finally:
@@ -139,44 +142,44 @@ class BusinessLicensePage(BasePage):
 
     # טאב 1 (שונה השם ל-run_tab_1 כדי להתאים לשגיאה שלך)
     def run_tab_1_external_link_tests(self):
-        print("\n--- Starting Fast Link Check (Business - Tab 1) ---")
+        logger.info("\n--- Starting Fast Link Check (Business - Tab 1) ---")
         for link_name, url_part in self.TAB_1_LINKS.items():
             self._verify_external_link(link_name, url_part)
 
     # ניווט לטאב 2
     def navigate_to_tab_2(self):
-        print(f"\n--- Navigating to Tab 2: {self.TAB_BUTTON_NAME_2} ---")
+        logger.info(f"\n--- Navigating to Tab 2: {self.TAB_BUTTON_NAME_2} ---")
         try:
             tab = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(self.TAB_2_LOCATOR))
             self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", tab)
             time.sleep(0.5)
             self.driver.execute_script("arguments[0].click();", tab)
-            print(">>> Switched to Tab 2.")
+            logger.info(">>> Switched to Tab 2.")
             time.sleep(2)
         except Exception as e:
-            print(f"❌ Failed to switch to Tab 2: {e}")
+            logger.error(f"❌ Failed to switch to Tab 2: {e}")
             self._take_error_screenshot("tab_2_switch_fail")
 
     def run_tab_2_external_link_tests(self):
-        print("\n--- Starting Fast Link Check (Business - Tab 2) ---")
+        logger.info("\n--- Starting Fast Link Check (Business - Tab 2) ---")
         for link_name, url_part in self.TAB_2_LINKS.items():
             self._verify_external_link(link_name, url_part)
 
     # ניווט לטאב 3
     def navigate_to_tab_3(self):
-        print(f"\n--- Navigating to Tab 3: {self.TAB_BUTTON_NAME_3} ---")
+        logger.info(f"\n--- Navigating to Tab 3: {self.TAB_BUTTON_NAME_3} ---")
         try:
             tab = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(self.TAB_3_LOCATOR))
             self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", tab)
             time.sleep(0.5)
             self.driver.execute_script("arguments[0].click();", tab)
-            print(">>> Switched to Tab 3.")
+            logger.info(">>> Switched to Tab 3.")
             time.sleep(2)
         except Exception as e:
-            print(f"❌ Failed to switch to Tab 3: {e}")
+            logger.error(f"❌ Failed to switch to Tab 3: {e}")
             self._take_error_screenshot("tab_3_switch_fail")
 
     def run_tab_3_external_link_tests(self):
-        print("\n--- Starting Fast Link Check (Business - Tab 3) ---")
+        logger.info("\n--- Starting Fast Link Check (Business - Tab 3) ---")
         for link_name, url_part in self.TAB_3_LINKS.items():
             self._verify_external_link(link_name, url_part)

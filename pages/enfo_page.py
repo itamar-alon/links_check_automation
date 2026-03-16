@@ -7,6 +7,9 @@ import os
 from datetime import datetime
 from urllib.parse import unquote
 from .base_page import BasePage
+import logging
+
+logger = logging.getLogger("SystemFlowLogger")
 
 class EnforcementPage(BasePage):
     """
@@ -36,7 +39,7 @@ class EnforcementPage(BasePage):
 
     def open_enforcement_page(self):
         self.go_to_url(self.ENFORCEMENT_URL)
-        print(f">>> Navigated to Enforcement page: {self.ENFORCEMENT_URL}")
+        logger.info(f">>> Navigated to Enforcement page: {self.ENFORCEMENT_URL}")
 
     def get_page_title(self):
         title_element = self.get_element(self.PAGE_TITLE)
@@ -53,13 +56,13 @@ class EnforcementPage(BasePage):
             filename = f"screenshots/error_enfo_{safe_name}_{timestamp}.png"
             
             self.driver.save_screenshot(filename)
-            print(f"📸 Screenshot saved: {filename}")
+            logger.info(f"📸 Screenshot saved: {filename}")
         except Exception as e:
-            print(f"⚠️ Failed to save screenshot: {e}")
+            logger.warning(f"⚠️ Failed to save screenshot: {e}")
 
     # 🟢 הבדיקה המהירה והחכמה
     def _verify_external_link(self, link_text, expected_url_part):
-        print(f"Testing: {link_text}")
+        logger.info(f"Testing: {link_text}")
         
         # 1. חיפוש האלמנט לפי טקסט
         link_locator = (By.XPATH, f"//*[contains(@role, 'button') or self::a][contains(normalize-space(.), '{link_text}')]")
@@ -69,7 +72,7 @@ class EnforcementPage(BasePage):
                 EC.presence_of_element_located(link_locator)
             )
         except TimeoutException:
-            print(f"❌ Link error: '{link_text}' (Element not found)")
+            logger.error(f"❌ Link error: '{link_text}' (Element not found)")
             self._take_error_screenshot(link_text)
             return
 
@@ -84,7 +87,7 @@ class EnforcementPage(BasePage):
                 decoded_expected = unquote(expected_url_part)
                 
                 if decoded_expected in decoded_href:
-                    print(f"✅ Passed (HREF check): {link_text}")
+                    logger.info(f"✅ Passed (HREF check): {link_text}")
                     return 
 
             # 3. Fallback: לחיצה (אם ה-HREF לא תואם או לא קיים)
@@ -102,15 +105,15 @@ class EnforcementPage(BasePage):
             expected_decoded = unquote(expected_url_part)
 
             if expected_decoded in current_url:
-                print(f"✅ Passed: {link_text}")
+                logger.info(f"✅ Passed: {link_text}")
             else:
                 # אזהרה בלבד על Redirect
-                print(f"⚠️ Warning: {link_text} opened but URL differs.\n   Expected: ...{expected_decoded[-20:]}\n   Got:      ...{current_url[-20:]}")
+                logger.warning(f"⚠️ Warning: {link_text} opened but URL differs.\n   Expected: ...{expected_decoded[-20:]}\n   Got:      ...{current_url[-20:]}")
 
             self.driver.close()
 
         except Exception as e:
-            print(f"❌ Link error: '{link_text}' (Failed to verify). Error: {e}")
+            logger.error(f"❌ Link error: '{link_text}' (Failed to verify). Error: {e}")
             self._take_error_screenshot(link_text)
         
         finally:
@@ -118,7 +121,7 @@ class EnforcementPage(BasePage):
             except: pass
 
     def run_tab_1_external_link_tests(self):
-        print("\n--- Starting Fast Link Check (Reports and Fines Tab) ---")
+        logger.info("\n--- Starting Fast Link Check (Reports and Fines Tab) ---")
         for link_name, url_part in self.TAB_1_EXTERNAL_LINKS.items():
             self._verify_external_link(link_name, url_part)
-        print("--- Link check finished ---")
+        logger.info("--- Link check finished ---")

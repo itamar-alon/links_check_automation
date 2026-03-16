@@ -1,0 +1,30 @@
+2026-02-19 07:01:23,376 - INFO - 🚀 STARTING Full System Flow Scan on PROD
+2026-02-19 07:01:23,413 - INFO - 🔹 Step 1: Navigating to Daycare
+2026-02-19 07:01:23,420 - INFO - 🔍 Checking: Daycare Main -> https://my.rishonlezion.muni.il/daycare/
+2026-02-19 07:01:26,195 - INFO - ✅ Link OK: Daycare Main
+2026-02-19 07:01:27,454 - INFO -   - Testing Daycare Tab 1 links
+2026-02-19 07:01:30,601 - INFO -   - Navigating to Daycare Tab 2
+2026-02-19 07:01:33,494 - INFO - 🔹 Step 2: Navigating to Education
+2026-02-19 07:01:33,500 - INFO - 🔍 Checking: Education Main -> https://my.rishonlezion.muni.il/education/
+2026-02-19 07:01:35,081 - INFO - ✅ Link OK: Education Main
+2026-02-19 07:01:35,594 - INFO -   - Verifying Education content and Tab 1
+2026-02-19 07:01:52,532 - INFO -   - Checking Education Tab: תיק תלמיד
+2026-02-19 07:01:59,783 - INFO -     - Attempting login for ID: 123123127
+2026-02-19 07:02:09,176 - INFO -     ✅ Login Successful
+2026-02-19 07:02:26,470 - INFO -   - Checking Education Tab: תשלומים
+2026-02-19 07:02:29,320 - INFO -   - Checking Education Tab: רישום חינוך יסודי
+2026-02-19 07:02:31,975 - INFO - 🔹 Step 3: Checking Enforcement
+2026-02-19 07:02:31,981 - INFO - 🔍 Checking: Enforcement Main -> https://my.rishonlezion.muni.il/enforcement/
+2026-02-19 07:02:33,217 - INFO - ✅ Link OK: Enforcement Main
+2026-02-19 07:02:33,887 - INFO - 🔹 Step 4: Checking Parking
+2026-02-19 07:02:33,892 - INFO - 🔍 Checking: Parking Main -> https://my.rishonlezion.muni.il/parking/
+2026-02-19 07:02:34,695 - INFO - ✅ Link OK: Parking Main
+2026-02-19 07:02:35,122 - INFO - 🔹 Step 5: Checking Street Info (GIS)
+2026-02-19 07:02:35,127 - INFO - 🔍 Checking: Street Info Main -> https://my.rishonlezion.muni.il/street-info/
+2026-02-19 07:02:35,904 - INFO - ✅ Link OK: Street Info Main
+2026-02-19 07:02:36,231 - INFO -   - Performing street search validation
+2026-02-19 07:02:39,750 - INFO -   - Expanding and verifying popup data
+2026-02-19 07:02:39,875 - INFO - 🔹 Step 6: Checking Water Interface
+2026-02-19 07:02:39,881 - INFO - 🔍 Checking: Water Main -> https://my.rishonlezion.muni.il/water/
+2026-02-19 07:02:40,755 - INFO - ✅ Link OK: Water Main
+2026-02-19 07:02:41,453 - INFO - 🎉 COMPLETED SUCCESSFULLY - Full system is healthy

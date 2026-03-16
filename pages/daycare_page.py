@@ -7,6 +7,9 @@ import os
 from datetime import datetime
 from urllib.parse import unquote
 from .base_page import BasePage
+import logging
+
+logger = logging.getLogger("SystemFlowLogger")
 
 class DaycarePage(BasePage):
     """
@@ -42,7 +45,7 @@ class DaycarePage(BasePage):
 
     def open_daycare_page(self):
         self.go_to_url(self.DAYCARE_URL)
-        print(f">>> Navigated to Daycare page: {self.DAYCARE_URL}")
+        logger.info(f">>> Navigated to Daycare page: {self.DAYCARE_URL}")
 
     def get_page_title(self):
         title_element = self.get_element(self.PAGE_TITLE)
@@ -60,7 +63,7 @@ class DaycarePage(BasePage):
 
     # 🟢 זו הפונקציה החכמה שהעתקנו מ-WaterPage
     def _verify_external_link(self, link_text, expected_url_part):
-        print(f"Testing: {link_text}...", end=" ", flush=True) 
+        logger.info(f"Testing: {link_text}...") 
         
         # שימוש בלוקייטור הגנרי החכם
         locator = (By.XPATH, self.GENERIC_LINK_XPATH.format(link_text))
@@ -76,7 +79,7 @@ class DaycarePage(BasePage):
                 EC.presence_of_element_located(locator)
             )
         except TimeoutException:
-            print(f"❌ Not Found")
+            logger.error(f"❌ Not Found: {link_text}")
             self._take_error_screenshot(link_text)
             return
 
@@ -88,14 +91,14 @@ class DaycarePage(BasePage):
 
         # 🚀 בדיקה מהירה 1: האם הציפייה נמצאת ב-HREF?
         if clean_expected in clean_href:
-            print(f"✅ OK (HREF)")
+            logger.info(f"✅ OK (HREF): {link_text}")
             return 
 
         # 🚀 בדיקה מהירה 2: אם זה לינק מקוצר (rb.gy), לפעמים ה-HREF שונה מהיעד הסופי
         # כאן אנחנו נאלצים ללחוץ
         
         # Fallback: לחיצה (רק אם הבדיקה המהירה נכשלה)
-        print(f"⚠️ Mismatch ('{clean_expected}' not in '{clean_href[:20]}...'), clicking...", end=" ")
+        logger.warning(f"⚠️ Mismatch for '{link_text}' ('{clean_expected}' not in '{clean_href[:20]}...'), clicking...")
         
         orig_window = self.driver.current_window_handle
         try:
@@ -112,21 +115,21 @@ class DaycarePage(BasePage):
             clean_current = current_url.replace("https://", "").replace("http://", "")
             
             if clean_expected in clean_current:
-                print(f"✅ OK (Clicked)")
+                logger.info(f"✅ OK (Clicked): {link_text}")
             else:
-                print(f"❌ URL Mismatch")
-                print(f"   Exp: {clean_expected[:30]}...")
-                print(f"   Got: {clean_current[:30]}...")
+                logger.error(f"❌ URL Mismatch for {link_text}")
+                logger.error(f"   Exp: ...{clean_expected[-30:]}")
+                logger.error(f"   Got: ...{clean_current[-30:]}")
                 self._take_error_screenshot(link_text)
 
         except Exception as e:
-            print(f"❌ Click Failed: {e}")
+            logger.error(f"❌ Click Failed for {link_text}: {e}")
             self.driver.switch_to.window(orig_window)
 
     # --- פונקציות הרצה ---
 
     def run_tab_1_external_link_tests(self):
-        print("\n--- Starting Fast Link Check (Daycare - Tab 1) ---")
+        logger.info("\n--- Starting Fast Link Check (Daycare - Tab 1) ---")
         for link_name, url_part in self.TAB_1_EXTERNAL_LINKS.items():
             self._verify_external_link(link_name, url_part)
 
@@ -134,11 +137,11 @@ class DaycarePage(BasePage):
         """ Switches to the second tab using URL manipulation (Fastest way) """
         target_url = self.DAYCARE_URL + self.TAB_2_URL_PART
         self.go_to_url(target_url)
-        print(f"\n>>> Navigating to Tab 2: {target_url}")
+        logger.info(f"\n>>> Navigating to Tab 2: {target_url}")
         # השארתי זמן קצר לטעינה, כי בשינוי URL הדף מתרענן לגמרי
         time.sleep(2) 
 
     def run_tab_2_external_link_tests(self):
-        print(f"\n--- Starting Fast Link Check (Daycare - Tab 2) ---")
+        logger.info(f"\n--- Starting Fast Link Check (Daycare - Tab 2) ---")
         for link_name, url_part in self.TAB_2_EXTERNAL_LINKS.items():
             self._verify_external_link(link_name, url_part)
