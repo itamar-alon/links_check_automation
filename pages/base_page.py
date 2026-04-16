@@ -1,7 +1,8 @@
 import requests
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import TimeoutException, NoSuchElementException
+from selenium.webdriver.common.by import By
 import logging
 
 logger = logging.getLogger("SystemFlowLogger")
@@ -19,13 +20,33 @@ class BasePage:
     def _get_wait(self, timeout):
         return WebDriverWait(self.driver, timeout if timeout is not None else self.DEFAULT_WAIT_TIME)
 
+    def dismiss_cookie_banner(self):
+        """ מנסה לסגור את באנר העוגיות בצורה חלקה ושקטה, בלי לזרוק Stacktrace ללוג """
+        try:
+            # מחפש כפתורי אישור נפוצים. אפשר לדייק את ה-XPATH לפי הבאנר הספציפי באתר
+            cookie_btn = self.driver.find_element(By.XPATH, "//button[contains(text(), 'מאשר') or contains(text(), 'אישור') or contains(text(), 'הבנתי')]")
+            cookie_btn.click()
+            logger.info("🍪 Cookie banner closed successfully.")
+        except NoSuchElementException:
+            # מתעלמים בשקט - הבאנר פשוט לא שם
+            pass
+        except Exception as e:
+            # מדפיסים רק שורת אזהרה קצרה במקום Stacktrace שלם אם משהו אחר השתבש
+            logger.debug(f"⚠️ Cookie banner present but could not be clicked (ignoring).")
+
     def validate_link_status(self, url):
         """ בודק שהקישור מחזיר סטטוס 200 ללא טעינת הדף בדפדפן ומעדכן רשימת לינקים שבורים. """
+        
+        # מוסיפים User-Agent כדי שהשרת לא יחסום את פייתון ויחשוב שזה בוט (מניעת שגיאות 403)
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        }
+        
         try:
             # שימוש ב-HEAD למהירות מירבית
-            response = requests.head(url, allow_redirects=True, timeout=5)
+            response = requests.head(url, allow_redirects=True, timeout=5, headers=headers)
             if response.status_code >= 400: # אם HEAD נכשל, ננסה GET
-                response = requests.get(url, allow_redirects=True, timeout=5, stream=True)
+                response = requests.get(url, allow_redirects=True, timeout=5, stream=True, headers=headers)
             
             is_success = response.status_code == 200
             

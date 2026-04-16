@@ -26,33 +26,33 @@ class EducationPage(BasePage):
     LOGIN_IFRAME_TAG = (By.TAG_NAME, "iframe")
     INTERNAL_TAB_ONLINE_FORMS = (By.XPATH, "//*[contains(text(), 'טפסים מקוונים')]")
 
-    # --- Data Dictionaries ---
+    # --- Data Dictionaries (UPDATED BASED ON LOGS) ---
     
     DEFAULT_TAB_LINKS = {
         "הילדים העירוניים": "https://www.edu-reg.co.il/login?cid=8512834&sys=0&sub=1",
         "והגשת ערעור": "https://www.edu-reg.co.il/closed?cid=8512834&sys=0&sub=2",
         "הגשת ערר": "https://www.edu-reg.co.il/closed?cid=8512834&sys=0&sub=2",
         "ביטול רישום": "https://www.edu-reg.co.il/login?cid=8512834&sys=0&sub=5",
-        "נוסח מכתב הרשאה": "rishonlezion.muni.il/Residents/Education/Documents/",
-        "על כתובת מגורים": "rishonlezion.muni.il/Residents/Education/Documents/",
-        "תצהיר": "rishonlezion.muni.il/Residents/Education/Documents/",
+        "נוסח מכתב הרשאה": "טופס ייפוי כח תשפו .pdf",
+        "על כתובת מגורים": "תצהיר מגורים תשפו  .pdf",
+        "תצהיר": "תצהיר הורים עצמאיים תשפו  .pdf",
         "הסכמה והתחייבות": "rishonlezion.muni.il/Residents/Education/registrationall/",
-        "לגני הילדים": "https://www.edu-reg.co.il/login?cid=8512834&sys=0&sub=5",
-        "נספח": "rishonlezion.muni.il/Residents/Education/Documents/",
+        "לגני הילדים": "https://www.edu-reg.co.il/login?cid=8512834&sys=0&sub=1", # Updated from sub=5 to sub=1
+        "נספח": "נספח ד מונגש .pdf", # Updated to 'מונגש'
         "יצירת קשר": "rishonlezion.muni.il/Lists/List21/CustomDispForm"
     }
 
     ONLINE_FORMS_LINKS = {
-        "יפוי כח": "https://www.rishonlezion.muni.il/Residents/Education/registrationall/Documents/טופס%20ייפוי%20כח%20תשפו%20.pdf", 
-        "כתובת מגורים בעיר": "https://www.rishonlezion.muni.il/Residents/Education/registrationall/Documents/תצהיר%20מגורים%20תשפו%20%20.pdf",      
-        "להורים": "https://www.rishonlezion.muni.il/Residents/Education/registrationall/Documents/תצהיר%20הורים%20עצמאיים%20תשפו%20%20.pdf",
-        "לימודי חוץ": "https://www.rishonlezion.muni.il/Residents/Education/registrationall/Documents/טופס%20תצהיר%20בקשה%20ללימודי%20חוץ%20תשפו%20.pdf" ,
-        "נספח": "https://www.rishonlezion.muni.il/Residents/Education/registrationall/Documents/נספח%20ד%20תשפו%20.pdf" ,
-        "בגן פרטי": "https://www.rishonlezion.muni.il/Residents/Education/registrationall/Documents/טופס%20בקשה%20להישארות%20שנה%20נוספת%20במעון%20.pdf" ,
-        "הסכמה והתחייבות": "https://www.rishonlezion.muni.il/Residents/Education/registrationall/Documents/טופס%20הצהתשפו%20.pdf" ,
-        "ויתור סודיות": "https://www.rishonlezion.muni.il/Residents/Education/registrationall/Documents/טופס%20ויתור%20סודיות%20.pdf" ,
+        "יפוי כח": "טופס%20ייפוי%20כח%20תשפו%20.pdf", 
+        "כתובת מגורים בעיר": "תצהיר%20מגורים%20תשפו%20%20.pdf",      
+        "להורים": "תצהיר%20הורים%20עצמאיים%20תשפו%20%20.pdf",
+        "לימודי חוץ": "טופס%20תצהיר%20בקשה%20ללימודי%20חוץ%20תשפו%20.pdf" ,
+        "נספח": "נספח%20ד%20מונגש%20.pdf" , # Updated from 'תשפו'
+        "בגן פרטי": "טופס%20בקשה%20להישארות%20שנה%20נוספת%20במעון%20.pdf" ,
+        "הסכמה והתחייבות": "טופס%20הצהתשפו%20.pdf" ,
+        "ויתור סודיות": "טופס%20ויתור%20סודיות%20.pdf" ,
         "ביטוח": "https://www.rishonlezion.muni.il/Activities/Pages/CityInsurance.aspx" ,
-        "להוראת קבע באשראי": "https://por141.cityforms.co.il/login/ActiveDirectory?returnUrl=%2Fappbuilder%2Fformrender" 
+        "להוראת קבע באשראי": "ActiveDirectory?returnUrl=%2Fappbuilder%2Fformrender%3Fprocess%3DProcessHok141" # Updated process param
     }
 
     TAB_3 = {
@@ -60,10 +60,10 @@ class EducationPage(BasePage):
         "שיבוץ והגשת וערר": "https://www.edu-reg.co.il/login" ,
         "שיבוץ והגשת ערר": "https://www.edu-reg.co.il/login" ,
         "ביטול רישום לבתי": "https://www.edu-reg.co.il/login" ,
-        "נוסח מכתב הרשאה": "https://www.rishonlezion.muni.il/Residents/Education/registrationall/Documents/טופס%20ייפוי%20כח%20תשפו%20.pdf" ,
-        "כתב הצהרה": "https://www.rishonlezion.muni.il/Residents/Education/registrationall/Documents/תצהיר%20מגורים%20תשפו%20%20.pdf" ,
-        "תצהיר ל": "https://www.rishonlezion.muni.il/Residents/Education/registrationall/Documents/תצהיר%20הורים%20עצמאיים%20תשפו%20%20.pdf" ,
-        "בקשה לאישור לימודי": "https://www.rishonlezion.muni.il/Residents/Education/registrationall/Documents/טופס%20תצהיר%20בקשה%20ללימודי%20חוץ%20תשפו%20.pdf" ,
+        "נוסח מכתב הרשאה": "טופס%20ייפוי%20כח%20תשפו%20.pdf" ,
+        "כתב הצהרה": "תצהיר%20מגורים%20תשפו%20%20.pdf" ,
+        "תצהיר ל": "תצהיר%20הורים%20עצמאיים%20תשפו%20%20.pdf" ,
+        "בקשה לאישור לימודי": "טופס%20תצהיר%20בקשה%20ללימודי%20חוץ%20תשפו%20.pdf" ,
         "יצירת קשר": "https://www.rishonlezion.muni.il/Lists/List21/CustomDispForm.aspx?ID=75" 
     }
 
@@ -71,10 +71,10 @@ class EducationPage(BasePage):
         "תושבים חדשים": "https://www.edu-reg.co.il/login" ,
         "והגשת ערר": "https://www.edu-reg.co.il/login" ,
         "ביטול רישום לבתי": "https://www.edu-reg.co.il/login" ,
-        "תצהיר מגורים": "https://www.rishonlezion.muni.il/Residents/Education/registrationall/Documents/תצהיר%20מגורים%20תשפו%20%20.pdf" ,
-        "ויתור סודיות": "https://www.rishonlezion.muni.il/Residents/Education/registrationall/Documents/טופס%20ויתור%20סודיות%20.pdf" ,
-        "תצהיר להורים": "https://www.rishonlezion.muni.il/Residents/Education/registrationall/Documents/תצהיר%20הורים%20עצמאיים%20תשפו%20%20.pdf" ,
-        "בקשה לאישור": "https://www.rishonlezion.muni.il/Residents/Education/registrationall/Documents/טופס%20תצהיר%20בקשה%20ללימודי%20חוץ%20תשפו%20.pdf" ,
+        "תצהיר מגורים": "תצהיר%20מגורים%20תשפו%20%20.pdf" ,
+        "ויתור סודיות": "טופס%20ויתור%20סודיות%20.pdf" ,
+        "תצהיר להורים": "תצהיר%20הורים%20עצמאיים%20תשפו%20%20.pdf" ,
+        "בקשה לאישור": "טופס%20תצהיר%20בקשה%20ללימודי%20חוץ%20תשפו%20.pdf" ,
         "יצירת קשר": "https://www.rishonlezion.muni.il/Lists/List21/CustomDispForm.aspx?ID=76" 
     }
 
@@ -91,7 +91,7 @@ class EducationPage(BasePage):
         "חינוך התראה": "https://city4u.co.il/PortalServicesSite/cityPay/283000/mislaka/121" ,
         "תאונות אישיות": "https://city4u.co.il/PortalServicesSite/cityPay/283000/mislaka/24" ,
         "בקשה להחזר": "https://tikshuv.rishonlezion.muni.il/hito/#/portal/main" ,
-        "בקשת הצטרפות": "https://por141.cityforms.co.il/login/ActiveDirectory?returnUrl=%2Fappbuilder%2Fformrender" 
+        "בקשת הצטרפות": "eFormRender.html" # Updated from 'formrender'
     }
     
     TAB_7 = {
@@ -245,7 +245,7 @@ class EducationPage(BasePage):
             el = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(link_locator))
         except:
             logger.error(f"❌ Link error: {link_text} (Element not found)")
-            self._take_error_screenshot(link_text) # 🟢 צילום מסך בכישלון מציאת כפתור
+            self._take_error_screenshot(link_text) 
             return
 
         # 2. חילוץ URL ישיר (אם אפשר)
@@ -256,8 +256,8 @@ class EducationPage(BasePage):
         try:
             if href and "http" in href:
                 # בדיקה מהירה בלי ללחוץ (אם זה לינק רגיל)
-                decoded_href = unquote(href)
-                decoded_expected = unquote(expected_url_part)
+                decoded_href = unquote(href).strip()
+                decoded_expected = unquote(expected_url_part).strip()
                 if decoded_expected in decoded_href:
                     logger.info(f"✅ Passed: {link_text}")
                     return
@@ -273,20 +273,20 @@ class EducationPage(BasePage):
             new_win = [w for w in self.driver.window_handles if w != orig_window][0]
             self.driver.switch_to.window(new_win)
             
-            # בדיקת URL מהירה
-            current_url = unquote(self.driver.current_url)
-            expected_decoded = unquote(expected_url_part)
+            # בדיקת URL מהירה - מנקים רווחים ותווים נסתרים
+            current_url = unquote(self.driver.current_url).strip()
+            expected_decoded = unquote(expected_url_part).strip()
 
             if expected_decoded in current_url:
                 logger.info(f"✅ Passed: {link_text}")
             else:
-                 # אזהרה (Warning) לא מצלמת מסך, לפי הדרישה
-                 logger.warning(f"⚠️ Warning: {link_text} opened but URL differs.\n   Expected: ...{expected_decoded[-20:]}\n   Got:      ...{current_url[-20:]}")
+                 # אזהרה (Warning) - עכשיו מדפיסה URL מלא לדיבוג קל
+                 logger.warning(f"⚠️ Warning: {link_text} opened but URL differs.\n   Expected URL Part: {expected_decoded}\n   Actual Full URL: {current_url}")
             
             self.driver.close()
         except Exception:
             logger.error(f"❌ Link error: {link_text} (Click failed or window didn't open)")
-            self._take_error_screenshot(link_text) # 🟢 צילום מסך בכישלון לחיצה
+            self._take_error_screenshot(link_text) 
         finally:
             try: self.driver.switch_to.window(orig_window)
             except: pass

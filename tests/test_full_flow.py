@@ -53,106 +53,108 @@ def test_full_system_flow(driver, secrets):
         # ==========================================
         with allure.step("Checking Daycare Interface"):
             url = secrets.get('daycare_url')
-            logger.info(f"Testing Daycare: {url}")
-            
-            daycare = DaycarePage(driver, url)
-            daycare.open_daycare_page()
-            
-            # --- עדכון: טיפול בבאנר עוגיות ---
-            try:
-                logger.info("🍪 Attempting to close cookie banner...")
-                # חיפוש כפתור שמכיל את הטקסט "מאשר הכל" כפי שמופיע בצילום המסך
-                cookie_button = WebDriverWait(driver, 10).until(
-                    EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'מאשר הכל')]"))
-                )
-                cookie_button.click()
-                logger.info("✅ Cookie banner closed successfully.")
-                time.sleep(1) # המתנה קלה להיעלמות האנימציה של הבאנר
-            except Exception as e:
-                logger.warning(f"⚠️ Cookie banner not found or already closed: {e}")
-            # ---------------------------------
+            if url:
+                logger.info(f"Testing Daycare: {url}")
+                daycare = DaycarePage(driver, url)
+                daycare.open_daycare_page()
+                
+                # --- שימוש נקי בפונקציה מה-BasePage ---
+                daycare.dismiss_cookie_banner()
+                
+                title = daycare.get_page_title()
+                if "צהרונים" in title or "Daycare" in title:
+                     allure.attach(title, name="Page Title", attachment_type=allure.attachment_type.TEXT)
 
-            title = daycare.get_page_title()
-            if "צהרונים" in title or "Daycare" in title:
-                 allure.attach(title, name="Page Title", attachment_type=allure.attachment_type.TEXT)
-
-            daycare.run_tab_1_external_link_tests()
-            daycare.navigate_to_daycare_tab()
-            daycare.run_tab_2_external_link_tests()
+                daycare.run_tab_1_external_link_tests()
+                daycare.navigate_to_daycare_tab()
+                daycare.run_tab_2_external_link_tests()
+            else:
+                logger.warning("⚠️ Daycare URL missing from secrets, skipping.")
 
         # ==========================================
         # 2. Education (חינוך)
         # ==========================================
         with allure.step("Checking Education Interface"):
             url = secrets.get('education_url')
-            logger.info(f"Testing Education: {url}")
-            edu = EducationPage(driver, url)
-            edu.open_education_page()
-            edu.verify_education_content()
-            edu.run_default_tab_external_link_tests()
+            if url:
+                logger.info(f"Testing Education: {url}")
+                edu = EducationPage(driver, url)
+                edu.open_education_page()
+                edu.verify_education_content()
+                edu.run_default_tab_external_link_tests()
 
-            # מיפוי טאבים
-            EDU_TABS_MAP = {
-                "רישום חינוך יסודי": edu.TAB_3,
-                "רישום חינוך על יסודי": edu.TAB_4,
-                "חינוך מיוחד": edu.TAB_5,
-                "תשלומים": edu.TAB_6,
-                "יצירת קשר": edu.TAB_7
-            }
+                # מיפוי טאבים
+                EDU_TABS_MAP = {
+                    "רישום חינוך יסודי": edu.TAB_3,
+                    "רישום חינוך על יסודי": edu.TAB_4,
+                    "חינוך מיוחד": edu.TAB_5,
+                    "תשלומים": edu.TAB_6,
+                    "יצירת קשר": edu.TAB_7
+                }
 
-            edu_tabs = ["תיק תלמיד", "רישום חינוך יסודי", "רישום חינוך על יסודי", 
-                        "חינוך מיוחד", "תשלומים", "יצירת קשר"]
+                edu_tabs = ["תיק תלמיד", "רישום חינוך יסודי", "רישום חינוך על יסודי", 
+                            "חינוך מיוחד", "תשלומים", "יצירת קשר"]
 
-            for tab in edu_tabs:
-                with allure.step(f"Education Tab: {tab}"):
-                    logger.info(f"Navigating to Education Tab: {tab}")
-                    edu.navigate_to_side_tab(tab)
+                for tab in edu_tabs:
+                    with allure.step(f"Education Tab: {tab}"):
+                        logger.info(f"Navigating to Education Tab: {tab}")
+                        edu.navigate_to_side_tab(tab)
 
-                    if tab == "תיק תלמיד":
-                        if edu.perform_student_login(USER_ID, PASSWORD):
-                            if edu.navigate_to_online_forms_after_login():
-                                edu.run_online_forms_link_tests()
-                        else:
-                            logger.warning("⚠️ Student Login Failed. Skipping tab.")
-                            allure.attach("Login Failed", name="Error", attachment_type=allure.attachment_type.TEXT)
-                            # לא מכשיל את כל הטסט, רק מדלג
-                            continue 
+                        if tab == "תיק תלמיד":
+                            if edu.perform_student_login(USER_ID, PASSWORD):
+                                if edu.navigate_to_online_forms_after_login():
+                                    edu.run_online_forms_link_tests()
+                            else:
+                                logger.warning("⚠️ Student Login Failed. Skipping tab.")
+                                allure.attach("Login Failed", name="Error", attachment_type=allure.attachment_type.TEXT)
+                                continue 
 
-                    if tab in EDU_TABS_MAP:
-                        edu.verify_links_from_dictionary(EDU_TABS_MAP[tab], tab)
+                        if tab in EDU_TABS_MAP:
+                            edu.verify_links_from_dictionary(EDU_TABS_MAP[tab], tab)
+            else:
+                logger.warning("⚠️ Education URL missing from secrets, skipping.")
 
         # ==========================================
         # 3. Enforcement (פיקוח)
         # ==========================================
         with allure.step("Checking Enforcement Interface"):
             url = secrets.get('enforcement_url')
-            logger.info(f"Testing Enforcement: {url}")
-            enfo = EnforcementPage(driver, url)
-            enfo.open_enforcement_page()
-            enfo.run_tab_1_external_link_tests()
+            if url:
+                logger.info(f"Testing Enforcement: {url}")
+                enfo = EnforcementPage(driver, url)
+                enfo.open_enforcement_page()
+                enfo.run_tab_1_external_link_tests()
+            else:
+                logger.warning("⚠️ Enforcement URL missing from secrets, skipping.")
 
         # ==========================================
         # 4. Parking (חניה)
         # ==========================================
         with allure.step("Checking Parking Interface"):
             url = secrets.get('parking_url')
-            logger.info(f"Testing Parking: {url}")
-            parking = ParkingPage(driver, url)
-            parking.open_parking_page()
-            parking.run_tab_1_external_link_tests()
-            parking.navigate_to_tab_3()
-            parking.run_tab_3_external_link_tests()
+            if url:
+                logger.info(f"Testing Parking: {url}")
+                parking = ParkingPage(driver, url)
+                parking.open_parking_page()
+                parking.run_tab_1_external_link_tests()
+                parking.navigate_to_tab_3()
+                parking.run_tab_3_external_link_tests()
+            else:
+                logger.warning("⚠️ Parking URL missing from secrets, skipping.")
 
         # ==========================================
         # 5. Street Info (מידע הנדסי)
         # ==========================================
         with allure.step("Checking Street Info Interface"):
             url = secrets.get('street_url')
-            logger.info(f"Testing Street Info: {url}")
-            street = StreetPage(driver, url)
-            street.open_street_page()
-            street.search_and_verify_table()
-            street.expand_and_verify_popup()
+            if url:
+                logger.info(f"Testing Street Info: {url}")
+                street = StreetPage(driver, url)
+                street.open_street_page()
+                street.search_and_verify_table()
+                street.expand_and_verify_popup()
+            else:
+                logger.warning("⚠️ Street Info URL missing from secrets, skipping.")
 
         # ==========================================
         # 6. Water (מים)
@@ -168,6 +170,8 @@ def test_full_system_flow(driver, secrets):
                 water.run_tab_2_external_link_tests()
                 water.navigate_to_tab_3()
                 water.run_tab_3_external_link_tests()
+            else:
+                logger.warning("⚠️ Water URL missing from secrets, skipping.")
 
         # ==========================================
         # 7. Business License (רישוי עסקים)
@@ -183,6 +187,8 @@ def test_full_system_flow(driver, secrets):
                 business.run_tab_2_external_link_tests()
                 business.navigate_to_tab_3()
                 business.run_tab_3_external_link_tests()
+            else:
+                logger.warning("⚠️ Business License URL missing from secrets, skipping.")
 
     except Exception as e:
         timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")

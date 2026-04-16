@@ -1,0 +1,33 @@
+2026-03-29 07:00:23,428 [INFO] 💻 Local PC detected: Cleaning only chromedriver to avoid closing personal tabs...
+2026-03-29 07:00:24,894 [INFO] 🌐 Initializing Chrome WebDriver...
+2026-03-29 07:01:52,909 [INFO] 🚀 Starting Full System Flow Test
+2026-03-29 07:01:52,915 [INFO] Testing Daycare: https://my.rishonlezion.muni.il/daycare/
+2026-03-29 07:01:52,921 [INFO] Navigating to URL: https://my.rishonlezion.muni.il/daycare/
+2026-03-29 07:02:03,409 [INFO] >>> Navigated to Daycare page: https://my.rishonlezion.muni.il/daycare/
+2026-03-29 07:02:17,821 [ERROR] ❌ Element not visible within timeout: ('tag name', 'h1')
+2026-03-29 07:02:17,934 [ERROR] STATUS: FULL_FLOW_FAILED | Reason: Exception occurred - Message: 
+Stacktrace:
+	chromedriver!GetHandleVerifier [0x7ff69c4aae35+14915]
+	chromedriver!GetHandleVerifier [0x7ff69c4aaea0+14980]
+	chromedriver!(No symbol) [0x7ff69c20d8fd]
+	chromedriver!(No symbol) [0x7ff69c266d0e]
+	chromedriver!(No symbol) [0x7ff69c26701c]
+	chromedriver!(No symbol) [0x7ff69c2b82e7]
+	chromedriver!(No symbol) [0x7ff69c2b4e57]
+	chromedriver!(No symbol) [0x7ff69c259368]
+	chromedriver!(No symbol) [0x7ff69c25a253]
+	chromedriver!GetHandleVerifier [0x7ff69c7b6da9+320889]
+	chromedriver!GetHandleVerifier [0x7ff69c7b133b+31ae1b]
+	chromedriver!GetHandleVerifier [0x7ff69c7d3982+33d462]
+	chromedriver!GetHandleVerifier [0x7ff69c4c80a5+31b85]
+	chromedriver!GetHandleVerifier [0x7ff69c4d0d8c+3a86c]
+	chromedriver!GetHandleVerifier [0x7ff69c4b4304+1dde4]
+	chromedriver!GetHandleVerifier [0x7ff69c4b44b6+1df96]
+	chromedriver!GetHandleVerifier [0x7ff69c499047+2b27]
+	KERNEL32!BaseThreadInitThunk [0x7ffa84f14cb0+10]
+	ntdll!RtlUserThreadStart [0x7ffa8653edcb+2b]
+
+2026-03-29 07:02:17,943 [ERROR] 
+❌ FULL FLOW TEST FAILED (Critical)
+2026-03-29 07:02:18,641 [ERROR] 📸 Screenshot saved to: C:\Rizone\Projects\links\screenshots\full_flow_critical_failure_2026-03-29_07-02-17.png
+2026-03-29 07:02:24,675 [INFO] 🛑 Closing Chrome WebDriver...

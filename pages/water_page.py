@@ -6,8 +6,11 @@ import time
 import os
 from datetime import datetime
 from urllib.parse import unquote
+import requests 
 from .base_page import BasePage
 import logging
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 logger = logging.getLogger("SystemFlowLogger")
 
@@ -17,35 +20,31 @@ class WaterPage(BasePage):
     Optimized for SPEED + Clean Structure (like BusinessLicensePage).
     """
 
-    # --- Locators & Constants ---
     PAGE_TITLE = (By.TAG_NAME, "h1")
     GENERIC_LINK_XPATH = "//*[contains(@role, 'button') or self::a][contains(normalize-space(.), '{}')]"
     
-    # 🟢 הגדרת שמות הטאבים כאן (קל לשינוי בעתיד)
     TAB_BUTTON_NAME_2 = "טפסים מקוונים"
     TAB_BUTTON_NAME_3 = "טפסים להורדה"
 
-    # יצירת לוקייטורים דינמית לפי השמות
+
     TAB_2_LOCATOR = (By.XPATH, f"//button[contains(text(), '{TAB_BUTTON_NAME_2}')]")
     TAB_3_LOCATOR = (By.XPATH, f"//button[contains(text(), '{TAB_BUTTON_NAME_3}')]")
 
-    # --- Data ---
     
     DEFAULT_TAB_LINKS = {
         "תשלום חשבון מים": "https://www.mast.co.il/15657/payment"
     }
 
-
     TAB_2_LINKS = {
-        "נפשות": "nefashot",        
+        "נפשות": "form_nefashot.aspx",        
         "צריכת": "meshutefet",       
         "הפקדת מפתח": "form_6",  
         "ביוב": "form_3_pinui_biuv.aspx", 
-        "בירור חיוב": "15657/form/b09e2646-cacf-4b5a-a149-4fca325255d2",   
+        "בירור חיוב": "form_8_zriha_meshutefet.aspx", 
         "בתעריף מיוחד": "form_5", 
-        "הכרה בתעריף": "99c4dcdd",  
-        "קריאת מונה": "b6baba35",   
-        "איכות מים": "form_9"    
+        "הכרה בתעריף": "form_5_mad_meshuyah.aspx", 
+        "קריאת מונה": "form_6_key.aspx", 
+        "איכות מים": "form_9"
     }
 
     TAB_3_LINKS = {
@@ -79,7 +78,7 @@ class WaterPage(BasePage):
         except:
             pass
 
-    # 🟢 הלוגיקה המהירה (HREF first, Click fallback)
+
     def _verify_external_link(self, link_text, expected_url_part):
         logger.info(f"Testing: {link_text}...") 
         
@@ -94,47 +93,40 @@ class WaterPage(BasePage):
             self._take_error_screenshot(link_text)
             return
 
-        href = el.get_attribute("href")
-        
-        # ניקוי ה-URLים להשוואה קלה יותר
-        clean_href = unquote(href).replace("https://", "").replace("http://", "") if href else ""
-        clean_expected = unquote(expected_url_part).replace("https://", "").replace("http://", "")
+ 
+        href = el.get_attribute("href") or ""
+        onclick = el.get_attribute("onclick") or ""
+        combined_attributes = unquote(href + " " + onclick)
+        clean_expected = unquote(expected_url_part).replace("https://", "").replace("http://", "").strip()
 
-        # 🚀 בדיקה מהירה
-        if clean_expected in clean_href:
-            logger.info(f"✅ OK (HREF): {link_text}")
-            return 
 
-        # Fallback: לחיצה
-        logger.warning(f"⚠️ HREF mismatch for {link_text}, clicking...")
-        
-        orig_window = self.driver.current_window_handle
-        try:
-            self.driver.execute_script("arguments[0].target='_blank'; arguments[0].click();", el)
-            
-            WebDriverWait(self.driver, 5).until(EC.number_of_windows_to_be(2))
-            new_win = [w for w in self.driver.window_handles if w != orig_window][0]
-            self.driver.switch_to.window(new_win)
-            
-            current_url = unquote(self.driver.current_url)
-            self.driver.close()
-            self.driver.switch_to.window(orig_window)
+        if clean_expected not in combined_attributes.replace("https://", "").replace("http://", ""):
+            logger.error(f"❌ Link Mismatch on Page for {link_text}")
+            logger.error(f"   Expected to find: {clean_expected}")
+            logger.error(f"   Attributes contained: {combined_attributes}")
+            self._take_error_screenshot(link_name=link_text)
+            return
 
-            clean_current = current_url.replace("https://", "").replace("http://", "")
-            
-            if clean_expected in clean_current:
-                logger.info(f"✅ OK (Clicked): {link_text}")
-            else:
-                logger.error(f"❌ URL Mismatch for {link_text}")
-                logger.error(f"   Exp: ...{clean_expected[-30:]}")
-                logger.error(f"   Got: ...{clean_current[-30:]}")
-                self._take_error_screenshot(link_text)
 
-        except Exception as e:
-            logger.error(f"❌ Click Failed for {link_text}: {e}")
-            self.driver.switch_to.window(orig_window)
+        if href.startswith("http"):
+            try:
 
-    # 🟢 פונקציות ניווט מעודכנות (עם הדפסה ברורה של שם הטאב)
+                response = requests.get(href, timeout=10, allow_redirects=True, verify=False)
+                
+                if response.status_code == 404:
+                    logger.error(f"❌ BROKEN LINK (404) for {link_text}: {href}")
+                    self._take_error_screenshot(link_text)
+                elif response.status_code >= 400:
+                    logger.error(f"❌ SERVER ERROR ({response.status_code}) for {link_text}")
+                else:
+                    logger.info(f"✅ OK (Link is Alive - {response.status_code}): {link_text}")
+                    
+            except Exception as e:
+                logger.warning(f"⚠️ Could not verify link status for {link_text}: {e}")
+        else:
+            logger.info(f"✅ OK (Attribute Match, local link skipped HTTP check): {link_text}")
+
+    # 🟢 פונקציות ניווט מעודכנות
     def navigate_to_tab_2(self):
         logger.info(f"\n--- Navigating to Tab 2: {self.TAB_BUTTON_NAME_2} ---")
         self._switch_tab(self.TAB_2_LOCATOR)

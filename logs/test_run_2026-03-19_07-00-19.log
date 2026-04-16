@@ -1,0 +1,371 @@
+2026-03-19 07:00:20,380 [INFO] 💻 Local PC detected: Cleaning only chromedriver to avoid closing personal tabs...
+2026-03-19 07:00:21,804 [INFO] 🌐 Initializing Chrome WebDriver...
+2026-03-19 07:01:40,635 [INFO] 🚀 Starting Full System Flow Test
+2026-03-19 07:01:40,643 [INFO] Testing Daycare: https://my.rishonlezion.muni.il/daycare/
+2026-03-19 07:01:40,653 [INFO] Navigating to URL: https://my.rishonlezion.muni.il/daycare/
+2026-03-19 07:01:45,138 [INFO] >>> Navigated to Daycare page: https://my.rishonlezion.muni.il/daycare/
+2026-03-19 07:01:45,148 [INFO] 🍪 Attempting to close cookie banner...
+2026-03-19 07:01:47,326 [INFO] ✅ Cookie banner closed successfully.
+2026-03-19 07:01:48,478 [INFO] 
+--- Starting Fast Link Check (Daycare - Tab 1) ---
+2026-03-19 07:01:48,486 [INFO] Testing: איזור אישי...
+2026-03-19 07:01:48,769 [INFO] ✅ OK (HREF): איזור אישי
+2026-03-19 07:01:48,776 [INFO] Testing: רישום לצהרוני בית הספר...
+2026-03-19 07:01:48,821 [INFO] ✅ OK (HREF): רישום לצהרוני בית הספר
+2026-03-19 07:01:48,828 [INFO] Navigating to URL: https://my.rishonlezion.muni.il/daycare/?tab=1
+2026-03-19 07:01:49,378 [INFO] 
+>>> Navigating to Tab 2: https://my.rishonlezion.muni.il/daycare/?tab=1
+2026-03-19 07:01:51,418 [INFO] 
+--- Starting Fast Link Check (Daycare - Tab 2) ---
+2026-03-19 07:01:51,427 [INFO] Testing: אזור אישי...
+2026-03-19 07:01:51,473 [INFO] ✅ OK (HREF): אזור אישי
+2026-03-19 07:01:51,479 [INFO] Testing: רישום מעונות יום...
+2026-03-19 07:01:51,520 [INFO] ✅ OK (HREF): רישום מעונות יום
+2026-03-19 07:01:51,526 [INFO] Testing: רישום מעון חרצית...
+2026-03-19 07:01:51,570 [INFO] ✅ OK (HREF): רישום מעון חרצית
+2026-03-19 07:01:51,576 [INFO] Testing Education: https://my.rishonlezion.muni.il/education/
+2026-03-19 07:01:51,582 [INFO] Navigating to URL: https://my.rishonlezion.muni.il/education/
+2026-03-19 07:01:51,995 [INFO] >>> Navigated to Education Interface: https://my.rishonlezion.muni.il/education/
+2026-03-19 07:01:52,001 [INFO] 
+--- Starting Content Validation ---
+2026-03-19 07:01:52,399 [INFO] ✅ Education page content verified!
+2026-03-19 07:01:52,405 [INFO] 
+--- Running Default Tab External Links ---
+2026-03-19 07:01:52,411 [INFO] 
+--- Running Link Tests for: Default Tab ---
+2026-03-19 07:01:52,417 [INFO] Testing: הילדים העירוניים
+2026-03-19 07:01:52,457 [INFO] ✅ Passed: הילדים העירוניים
+2026-03-19 07:01:52,472 [INFO] Testing: והגשת ערעור
+2026-03-19 07:01:56,448 [WARNING] ⚠️ Warning: והגשת ערעור opened but URL differs.
+   Expected: ...=8512834&sys=0&sub=2
+   Got:      ...=8512834&sys=0&sub=2
+2026-03-19 07:01:56,565 [INFO] Testing: הגשת ערר
+2026-03-19 07:01:58,576 [WARNING] ⚠️ Warning: הגשת ערר opened but URL differs.
+   Expected: ...=8512834&sys=0&sub=2
+   Got:      ...=8512834&sys=0&sub=2
+2026-03-19 07:01:59,260 [INFO] Testing: ביטול רישום
+2026-03-19 07:01:59,298 [INFO] ✅ Passed: ביטול רישום
+2026-03-19 07:01:59,325 [INFO] Testing: נוסח מכתב הרשאה
+2026-03-19 07:02:02,979 [WARNING] ⚠️ Warning: נוסח מכתב הרשאה opened but URL differs.
+   Expected: ...Education/Documents/
+   Got:      ...ס ייפוי כח תשפו .pdf
+2026-03-19 07:02:03,178 [INFO] Testing: על כתובת מגורים
+2026-03-19 07:02:04,257 [WARNING] ⚠️ Warning: על כתובת מגורים opened but URL differs.
+   Expected: ...Education/Documents/
+   Got:      ...יר מגורים תשפו  .pdf
+2026-03-19 07:02:04,356 [INFO] Testing: תצהיר
+2026-03-19 07:02:05,447 [WARNING] ⚠️ Warning: תצהיר opened but URL differs.
+   Expected: ...Education/Documents/
+   Got:      ...ם עצמאיים תשפו  .pdf
+2026-03-19 07:02:05,551 [INFO] Testing: הסכמה והתחייבות
+2026-03-19 07:02:05,589 [INFO] ✅ Passed: הסכמה והתחייבות
+2026-03-19 07:02:05,597 [INFO] Testing: לגני הילדים
+2026-03-19 07:02:08,838 [WARNING] ⚠️ Warning: לגני הילדים opened but URL differs.
+   Expected: ...=8512834&sys=0&sub=5
+   Got:      ...=8512834&sys=0&sub=1
+2026-03-19 07:02:08,990 [INFO] Testing: נספח
+2026-03-19 07:02:09,982 [WARNING] ⚠️ Warning: נספח opened but URL differs.
+   Expected: ...Education/Documents/
+   Got:      ...ts/נספח ד מונגש .pdf
+2026-03-19 07:02:10,111 [INFO] Testing: יצירת קשר
+2026-03-19 07:02:10,162 [INFO] ✅ Passed: יצירת קשר
+2026-03-19 07:02:10,176 [INFO] Navigating to Education Tab: תיק תלמיד
+2026-03-19 07:02:10,182 [INFO] 
+--- Navigating to Side Tab: תיק תלמיד ---
+2026-03-19 07:02:15,245 [INFO] ✅ Successfully navigated to: תיק תלמיד
+2026-03-19 07:02:17,253 [INFO] 
+ STARTING LOGIN FLOW via LoginPage
+2026-03-19 07:02:20,282 [INFO] >>> Clicked 'באמצעות סיסמה' tab inside modal
+2026-03-19 07:02:22,610 [INFO] >>> ID filled
+2026-03-19 07:02:23,378 [INFO] >>> Password filled
+2026-03-19 07:02:23,603 [INFO] >>> Clicked login button normally
+2026-03-19 07:02:26,510 [INFO] >>> Modal closed successfully
+2026-03-19 07:02:26,541 [INFO] ✅ Login successful! Modal closed.
+2026-03-19 07:02:29,548 [INFO] 
+--- Navigating to Internal Tab: טפסים מקוונים ---
+2026-03-19 07:02:30,761 [INFO] ✅ Clicked 'Online Forms' tab.
+2026-03-19 07:02:33,767 [INFO] 
+--- Running Link Tests for: Online Forms Internal ---
+2026-03-19 07:02:33,773 [INFO] Testing: יפוי כח
+2026-03-19 07:02:33,844 [INFO] ✅ Passed: יפוי כח
+2026-03-19 07:02:33,855 [INFO] Testing: כתובת מגורים בעיר
+2026-03-19 07:02:33,902 [INFO] ✅ Passed: כתובת מגורים בעיר
+2026-03-19 07:02:33,909 [INFO] Testing: להורים
+2026-03-19 07:02:33,941 [INFO] ✅ Passed: להורים
+2026-03-19 07:02:33,951 [INFO] Testing: לימודי חוץ
+2026-03-19 07:02:33,983 [INFO] ✅ Passed: לימודי חוץ
+2026-03-19 07:02:33,990 [INFO] Testing: נספח
+2026-03-19 07:02:34,780 [WARNING] ⚠️ Warning: נספח opened but URL differs.
+   Expected: ...nts/נספח ד תשפו .pdf
+   Got:      ...ts/נספח ד מונגש .pdf
+2026-03-19 07:02:34,906 [INFO] Testing: בגן פרטי
+2026-03-19 07:02:34,967 [INFO] ✅ Passed: בגן פרטי
+2026-03-19 07:02:34,978 [INFO] Testing: הסכמה והתחייבות
+2026-03-19 07:02:35,077 [INFO] ✅ Passed: הסכמה והתחייבות
+2026-03-19 07:02:35,092 [INFO] Testing: ויתור סודיות
+2026-03-19 07:02:35,151 [INFO] ✅ Passed: ויתור סודיות
+2026-03-19 07:02:35,163 [INFO] Testing: ביטוח
+2026-03-19 07:02:35,224 [INFO] ✅ Passed: ביטוח
+2026-03-19 07:02:35,231 [INFO] Testing: להוראת קבע באשראי
+2026-03-19 07:02:36,375 [WARNING] ⚠️ Warning: להוראת קבע באשראי opened but URL differs.
+   Expected: ...ppbuilder/formrender
+   Got:      ...rocess=ProcessHok141
+2026-03-19 07:02:36,444 [INFO] Navigating to Education Tab: רישום חינוך יסודי
+2026-03-19 07:02:36,457 [INFO] 
+--- Navigating to Side Tab: רישום חינוך יסודי ---
+2026-03-19 07:02:37,146 [INFO] ✅ Successfully navigated to: רישום חינוך יסודי
+2026-03-19 07:02:39,155 [INFO] 
+--- Running Link Tests for: רישום חינוך יסודי ---
+2026-03-19 07:02:39,161 [INFO] Testing: רישום לכיתה
+2026-03-19 07:02:39,198 [INFO] ✅ Passed: רישום לכיתה
+2026-03-19 07:02:39,205 [INFO] Testing: שיבוץ והגשת וערר
+2026-03-19 07:02:39,234 [INFO] ✅ Passed: שיבוץ והגשת וערר
+2026-03-19 07:02:39,241 [INFO] Testing: שיבוץ והגשת ערר
+2026-03-19 07:02:39,270 [INFO] ✅ Passed: שיבוץ והגשת ערר
+2026-03-19 07:02:39,278 [INFO] Testing: ביטול רישום לבתי
+2026-03-19 07:02:39,313 [INFO] ✅ Passed: ביטול רישום לבתי
+2026-03-19 07:02:39,320 [INFO] Testing: נוסח מכתב הרשאה
+2026-03-19 07:02:39,347 [INFO] ✅ Passed: נוסח מכתב הרשאה
+2026-03-19 07:02:39,354 [INFO] Testing: כתב הצהרה
+2026-03-19 07:02:39,387 [INFO] ✅ Passed: כתב הצהרה
+2026-03-19 07:02:39,405 [INFO] Testing: תצהיר ל
+2026-03-19 07:02:39,438 [INFO] ✅ Passed: תצהיר ל
+2026-03-19 07:02:39,446 [INFO] Testing: בקשה לאישור לימודי
+2026-03-19 07:02:39,481 [INFO] ✅ Passed: בקשה לאישור לימודי
+2026-03-19 07:02:39,491 [INFO] Testing: יצירת קשר
+2026-03-19 07:02:39,523 [INFO] ✅ Passed: יצירת קשר
+2026-03-19 07:02:39,530 [INFO] Navigating to Education Tab: רישום חינוך על יסודי
+2026-03-19 07:02:39,535 [INFO] 
+--- Navigating to Side Tab: רישום חינוך על יסודי ---
+2026-03-19 07:02:40,230 [INFO] ✅ Successfully navigated to: רישום חינוך על יסודי
+2026-03-19 07:02:42,237 [INFO] 
+--- Running Link Tests for: רישום חינוך על יסודי ---
+2026-03-19 07:02:42,244 [INFO] Testing: תושבים חדשים
+2026-03-19 07:02:42,282 [INFO] ✅ Passed: תושבים חדשים
+2026-03-19 07:02:42,291 [INFO] Testing: והגשת ערר
+2026-03-19 07:02:42,334 [INFO] ✅ Passed: והגשת ערר
+2026-03-19 07:02:42,346 [INFO] Testing: ביטול רישום לבתי
+2026-03-19 07:02:42,374 [INFO] ✅ Passed: ביטול רישום לבתי
+2026-03-19 07:02:42,381 [INFO] Testing: תצהיר מגורים
+2026-03-19 07:02:42,414 [INFO] ✅ Passed: תצהיר מגורים
+2026-03-19 07:02:42,421 [INFO] Testing: ויתור סודיות
+2026-03-19 07:02:42,448 [INFO] ✅ Passed: ויתור סודיות
+2026-03-19 07:02:42,456 [INFO] Testing: תצהיר להורים
+2026-03-19 07:02:42,490 [INFO] ✅ Passed: תצהיר להורים
+2026-03-19 07:02:42,497 [INFO] Testing: בקשה לאישור
+2026-03-19 07:02:42,529 [INFO] ✅ Passed: בקשה לאישור
+2026-03-19 07:02:42,537 [INFO] Testing: יצירת קשר
+2026-03-19 07:02:42,564 [INFO] ✅ Passed: יצירת קשר
+2026-03-19 07:02:42,572 [INFO] Navigating to Education Tab: חינוך מיוחד
+2026-03-19 07:02:42,576 [INFO] 
+--- Navigating to Side Tab: חינוך מיוחד ---
+2026-03-19 07:02:43,226 [INFO] ✅ Successfully navigated to: חינוך מיוחד
+2026-03-19 07:02:45,233 [INFO] 
+--- Running Link Tests for: חינוך מיוחד ---
+2026-03-19 07:02:45,239 [INFO] Testing: בתי ספר
+2026-03-19 07:02:45,274 [INFO] ✅ Passed: בתי ספר
+2026-03-19 07:02:45,281 [INFO] Testing: גני ילדים
+2026-03-19 07:02:45,310 [INFO] ✅ Passed: גני ילדים
+2026-03-19 07:02:45,317 [INFO] Testing: ועדת זכאות
+2026-03-19 07:02:45,348 [INFO] ✅ Passed: ועדת זכאות
+2026-03-19 07:02:45,357 [INFO] Testing: ועדת השגה
+2026-03-19 07:02:45,388 [INFO] ✅ Passed: ועדת השגה
+2026-03-19 07:02:45,395 [INFO] Testing: יצירת קשר
+2026-03-19 07:02:45,422 [INFO] ✅ Passed: יצירת קשר
+2026-03-19 07:02:45,429 [INFO] Navigating to Education Tab: תשלומים
+2026-03-19 07:02:45,434 [INFO] 
+--- Navigating to Side Tab: תשלומים ---
+2026-03-19 07:02:46,108 [INFO] ✅ Successfully navigated to: תשלומים
+2026-03-19 07:02:48,113 [INFO] 
+--- Running Link Tests for: תשלומים ---
+2026-03-19 07:02:48,119 [INFO] Testing: תשלומי חינוך
+2026-03-19 07:02:48,153 [INFO] ✅ Passed: תשלומי חינוך
+2026-03-19 07:02:48,160 [INFO] Testing: חינוך התראה
+2026-03-19 07:02:48,201 [INFO] ✅ Passed: חינוך התראה
+2026-03-19 07:02:48,212 [INFO] Testing: תאונות אישיות
+2026-03-19 07:02:48,244 [INFO] ✅ Passed: תאונות אישיות
+2026-03-19 07:02:48,251 [INFO] Testing: בקשה להחזר
+2026-03-19 07:02:50,138 [WARNING] ⚠️ Warning: בקשה להחזר opened but URL differs.
+   Expected: ...l/hito/#/portal/main
+   Got:      ...zion.muni.il/hito/#/
+2026-03-19 07:02:50,330 [INFO] Testing: בקשת הצטרפות
+2026-03-19 07:02:51,654 [WARNING] ⚠️ Warning: בקשת הצטרפות opened but URL differs.
+   Expected: ...ppbuilder/formrender
+   Got:      ...der/eFormRender.html
+2026-03-19 07:02:51,796 [INFO] Navigating to Education Tab: יצירת קשר
+2026-03-19 07:02:51,803 [INFO] 
+--- Navigating to Side Tab: יצירת קשר ---
+2026-03-19 07:02:52,531 [INFO] ✅ Successfully navigated to: יצירת קשר
+2026-03-19 07:02:54,537 [INFO] 
+--- Running Link Tests for: יצירת קשר ---
+2026-03-19 07:02:54,544 [INFO] Testing: גני
+2026-03-19 07:02:54,584 [INFO] ✅ Passed: גני
+2026-03-19 07:02:54,592 [INFO] Testing: חינוך יסודי
+2026-03-19 07:02:54,631 [INFO] ✅ Passed: חינוך יסודי
+2026-03-19 07:02:54,639 [INFO] Testing: על יסודי
+2026-03-19 07:02:54,674 [INFO] ✅ Passed: על יסודי
+2026-03-19 07:02:54,683 [INFO] Testing: מיוחד
+2026-03-19 07:02:54,720 [INFO] ✅ Passed: מיוחד
+2026-03-19 07:02:54,729 [INFO] Testing: ההסעות
+2026-03-19 07:02:54,764 [INFO] ✅ Passed: ההסעות
+2026-03-19 07:02:54,773 [INFO] Testing Enforcement: https://my.rishonlezion.muni.il/enforcement/
+2026-03-19 07:02:54,778 [INFO] Navigating to URL: https://my.rishonlezion.muni.il/enforcement/
+2026-03-19 07:02:55,141 [INFO] >>> Navigated to Enforcement page: https://my.rishonlezion.muni.il/enforcement/
+2026-03-19 07:02:55,147 [INFO] 
+--- Starting Fast Link Check (Reports and Fines Tab) ---
+2026-03-19 07:02:55,152 [INFO] Testing: תשלום דו
+2026-03-19 07:02:55,185 [INFO] ✅ Passed (HREF check): תשלום דו
+2026-03-19 07:02:55,193 [INFO] Testing: הודעת תשלום קנס
+2026-03-19 07:02:55,226 [INFO] ✅ Passed (HREF check): הודעת תשלום קנס
+2026-03-19 07:02:55,233 [INFO] Testing: התראה לפני עיקול
+2026-03-19 07:02:55,262 [INFO] ✅ Passed (HREF check): התראה לפני עיקול
+2026-03-19 07:02:55,270 [INFO] Testing: צו עיקול
+2026-03-19 07:02:55,299 [INFO] ✅ Passed (HREF check): צו עיקול
+2026-03-19 07:02:55,308 [INFO] Testing: שובר דחיית
+2026-03-19 07:02:55,342 [INFO] ✅ Passed (HREF check): שובר דחיית
+2026-03-19 07:02:55,350 [INFO] Testing: צפייה בפרטי
+2026-03-19 07:02:55,387 [INFO] ✅ Passed (HREF check): צפייה בפרטי
+2026-03-19 07:02:55,395 [INFO] Testing: סטטוס ערעור
+2026-03-19 07:02:55,428 [INFO] ✅ Passed (HREF check): סטטוס ערעור
+2026-03-19 07:02:55,443 [INFO] Testing: בקשה לביטול
+2026-03-19 07:02:55,473 [INFO] ✅ Passed (HREF check): בקשה לביטול
+2026-03-19 07:02:55,482 [INFO] --- Link check finished ---
+2026-03-19 07:02:55,488 [INFO] Testing Parking: https://my.rishonlezion.muni.il/parking/
+2026-03-19 07:02:55,492 [INFO] Navigating to URL: https://my.rishonlezion.muni.il/parking/
+2026-03-19 07:02:55,782 [INFO] >>> Navigated to Parking page: https://my.rishonlezion.muni.il/parking/
+2026-03-19 07:02:55,787 [INFO] 
+--- Starting Fast Link Check (Tab 1 - Fines) ---
+2026-03-19 07:02:55,793 [INFO] Testing: תשלום דו
+2026-03-19 07:02:55,821 [INFO] ✅ Passed: תשלום דו
+2026-03-19 07:02:55,829 [INFO] Testing: הודעת תשלום קנס
+2026-03-19 07:02:55,858 [INFO] ✅ Passed: הודעת תשלום קנס
+2026-03-19 07:02:55,865 [INFO] Testing: התראה לפני עיקול
+2026-03-19 07:02:55,890 [INFO] ✅ Passed: התראה לפני עיקול
+2026-03-19 07:02:55,897 [INFO] Testing: צו עיקול מטלטלין
+2026-03-19 07:02:55,931 [INFO] ✅ Passed: צו עיקול מטלטלין
+2026-03-19 07:02:55,941 [INFO] Testing: שובר דחיית ערעור
+2026-03-19 07:02:55,984 [INFO] ✅ Passed: שובר דחיית ערעור
+2026-03-19 07:02:55,999 [INFO] 
+--- Navigating to Tab 3: תווי חניה ---
+2026-03-19 07:02:56,790 [INFO] >>> Switched to Tab 3.
+2026-03-19 07:02:58,796 [INFO] 
+--- Starting Fast Link Check (Tab 3 - Parking Permits) ---
+2026-03-19 07:02:58,803 [INFO] Testing: רשימת אזורי חניה
+2026-03-19 07:02:58,852 [INFO] ✅ Passed: רשימת אזורי חניה
+2026-03-19 07:02:58,860 [INFO] Testing: פירוט חניונים
+2026-03-19 07:02:58,892 [INFO] ✅ Passed: פירוט חניונים
+2026-03-19 07:02:58,900 [INFO] Testing: חידוש תו חניה
+2026-03-19 07:02:58,932 [INFO] ✅ Passed: חידוש תו חניה
+2026-03-19 07:02:58,957 [INFO] Testing: בדיקת תוקף
+2026-03-19 07:02:58,990 [INFO] ✅ Passed: בדיקת תוקף
+2026-03-19 07:02:58,998 [INFO] Testing: השלמת מסמכים
+2026-03-19 07:02:59,034 [INFO] ✅ Passed: השלמת מסמכים
+2026-03-19 07:02:59,041 [INFO] Testing: הקצאת חניה שמורה
+2026-03-19 07:02:59,075 [INFO] ✅ Passed: הקצאת חניה שמורה
+2026-03-19 07:02:59,084 [INFO] Testing Street Info: https://my.rishonlezion.muni.il/street-info/
+2026-03-19 07:02:59,090 [INFO] Navigating to URL: https://my.rishonlezion.muni.il/street-info/
+2026-03-19 07:02:59,414 [INFO] >>> ✅ Container title 'מידע על רחוב' found. DOM is stable.
+2026-03-19 07:02:59,420 [INFO] >>> Navigated to Street Page: https://my.rishonlezion.muni.il/street-info/
+2026-03-19 07:02:59,429 [INFO] 
+--- Starting street search test: רבי מאיר ---
+2026-03-19 07:03:00,313 [INFO] >>> ✅ Street suggestion clicked successfully using JS. Initiating AJAX.
+2026-03-19 07:03:02,696 [INFO] ✅ Data returned to table successfully. Found validation text: תפריט
+ישראל ישראלי
+חזרה לדף הבית
+מידע על רחוב:
+שם ...
+2026-03-19 07:03:02,741 [INFO] 
+--- Starting popup expansion test ---
+2026-03-19 07:03:03,000 [INFO] >>> Plus button clicked using JS.
+2026-03-19 07:03:04,808 [INFO] ✅ Popup loaded successfully. Found validation text: תפריט
+ישראל ישראלי
+חזרה לדף הב
+2026-03-19 07:03:04,814 [INFO] Testing Water: https://my.rishonlezion.muni.il/water/
+2026-03-19 07:03:04,820 [INFO] Navigating to URL: https://my.rishonlezion.muni.il/water/
+2026-03-19 07:03:05,427 [INFO] Testing: תשלום חשבון מים...
+2026-03-19 07:03:05,458 [INFO] ✅ OK (HREF): תשלום חשבון מים
+2026-03-19 07:03:05,464 [INFO] 
+--- Navigating to Tab 2: טפסים מקוונים ---
+2026-03-19 07:03:06,098 [INFO] >>> Switched successfully.
+2026-03-19 07:03:07,603 [INFO] Testing: נפשות...
+2026-03-19 07:03:07,635 [INFO] ✅ OK (HREF): נפשות
+2026-03-19 07:03:07,639 [INFO] Testing: צריכת...
+2026-03-19 07:03:07,670 [INFO] ✅ OK (HREF): צריכת
+2026-03-19 07:03:07,674 [INFO] Testing: הפקדת מפתח...
+2026-03-19 07:03:07,700 [INFO] ✅ OK (HREF): הפקדת מפתח
+2026-03-19 07:03:07,705 [INFO] Testing: ביוב...
+2026-03-19 07:03:07,732 [INFO] ✅ OK (HREF): ביוב
+2026-03-19 07:03:07,736 [INFO] Testing: בירור חיוב...
+2026-03-19 07:03:07,761 [WARNING] ⚠️ HREF mismatch for בירור חיוב, clicking...
+2026-03-19 07:03:56,661 [INFO] ✅ OK (Clicked): בירור חיוב
+2026-03-19 07:03:56,665 [INFO] Testing: בתעריף מיוחד...
+2026-03-19 07:03:56,696 [INFO] ✅ OK (HREF): בתעריף מיוחד
+2026-03-19 07:03:56,702 [INFO] Testing: הכרה בתעריף...
+2026-03-19 07:03:56,730 [WARNING] ⚠️ HREF mismatch for הכרה בתעריף, clicking...
+2026-03-19 07:04:44,218 [INFO] ✅ OK (Clicked): הכרה בתעריף
+2026-03-19 07:04:44,223 [INFO] Testing: קריאת מונה...
+2026-03-19 07:04:44,270 [WARNING] ⚠️ HREF mismatch for קריאת מונה, clicking...
+2026-03-19 07:05:30,261 [ERROR] ❌ URL Mismatch for קריאת מונה
+2026-03-19 07:05:30,265 [ERROR]    Exp: ...b6baba35
+2026-03-19 07:05:30,277 [ERROR]    Got: ...www.mast.co.il/
+2026-03-19 07:05:30,607 [INFO] Testing: איכות מים...
+2026-03-19 07:05:30,637 [INFO] ✅ OK (HREF): איכות מים
+2026-03-19 07:05:30,641 [INFO] 
+--- Navigating to Tab 3: טפסים להורדה ---
+2026-03-19 07:05:31,220 [INFO] >>> Switched successfully.
+2026-03-19 07:05:32,726 [INFO] Testing: בקשה לביקור...
+2026-03-19 07:05:32,756 [INFO] ✅ OK (HREF): בקשה לביקור
+2026-03-19 07:05:32,776 [INFO] Testing: בקשה לקבלת...
+2026-03-19 07:05:32,801 [INFO] ✅ OK (HREF): בקשה לקבלת
+2026-03-19 07:05:32,805 [INFO] Testing: הוראה...
+2026-03-19 07:05:32,830 [INFO] ✅ OK (HREF): הוראה
+2026-03-19 07:05:32,833 [INFO] Testing: החלפת...
+2026-03-19 07:05:32,861 [INFO] ✅ OK (HREF): החלפת
+2026-03-19 07:05:32,865 [INFO] Testing: סניטרית...
+2026-03-19 07:05:32,890 [INFO] ✅ OK (HREF): סניטרית
+2026-03-19 07:05:32,894 [INFO] Testing: הנדרשים...
+2026-03-19 07:05:32,919 [INFO] ✅ OK (HREF): הנדרשים
+2026-03-19 07:05:32,923 [INFO] Testing: כשרות...
+2026-03-19 07:05:32,950 [INFO] ✅ OK (HREF): כשרות
+2026-03-19 07:05:32,954 [INFO] Testing Business License: https://my.rishonlezion.muni.il/business/
+2026-03-19 07:05:32,991 [INFO] Navigating to URL: https://my.rishonlezion.muni.il/business/
+2026-03-19 07:05:33,375 [INFO] >>> Navigated to Business page: https://my.rishonlezion.muni.il/business/
+2026-03-19 07:05:33,388 [INFO] 
+--- Starting Fast Link Check (Business - Tab 1) ---
+2026-03-19 07:05:33,423 [INFO] Testing: שלבים ב
+2026-03-19 07:05:33,457 [INFO] ✅ Passed (HREF check): שלבים ב
+2026-03-19 07:05:33,465 [INFO] Testing: הגשת בקשה
+2026-03-19 07:05:33,499 [INFO] ✅ Passed (HREF check): הגשת בקשה
+2026-03-19 07:05:33,505 [INFO] 
+--- Navigating to Tab 2: דרישות ותנאים, מפרטים והיתרים ---
+2026-03-19 07:05:34,123 [INFO] >>> Switched to Tab 2.
+2026-03-19 07:05:36,128 [INFO] 
+--- Starting Fast Link Check (Business - Tab 2) ---
+2026-03-19 07:05:36,158 [INFO] Testing: רישיון לניהול עסק
+2026-03-19 07:05:36,188 [INFO] ✅ Passed (HREF check): רישיון לניהול עסק
+2026-03-19 07:05:36,195 [INFO] Testing: דרישות ותנאים לקבלת רישיון עסק
+2026-03-19 07:05:36,234 [INFO] ✅ Passed (HREF check): דרישות ותנאים לקבלת רישיון עסק
+2026-03-19 07:05:36,241 [INFO] Testing: אתר המפרטים האחידים
+2026-03-19 07:05:36,273 [INFO] ✅ Passed (HREF check): אתר המפרטים האחידים
+2026-03-19 07:05:36,279 [INFO] Testing: בדיקת סטטוס רישוי
+2026-03-19 07:05:36,307 [INFO] ✅ Passed (HREF check): בדיקת סטטוס רישוי
+2026-03-19 07:05:36,314 [INFO] Testing: דרישות לנגישות עסקים
+2026-03-19 07:05:36,355 [INFO] ✅ Passed (HREF check): דרישות לנגישות עסקים
+2026-03-19 07:05:36,362 [INFO] 
+--- Navigating to Tab 3: טפסים ---
+2026-03-19 07:05:36,982 [INFO] >>> Switched to Tab 3.
+2026-03-19 07:05:38,986 [INFO] 
+--- Starting Fast Link Check (Business - Tab 3) ---
+2026-03-19 07:05:38,992 [INFO] Testing: ושולחנות ומתקני
+2026-03-19 07:05:39,055 [INFO] ✅ Passed (HREF check): ושולחנות ומתקני
+2026-03-19 07:05:39,064 [INFO] Testing: שולחנות וכיסאות
+2026-03-19 07:05:39,096 [INFO] ✅ Passed (HREF check): שולחנות וכיסאות
+2026-03-19 07:05:39,102 [INFO] Testing: בקשה לרישיון
+2026-03-19 07:05:39,132 [INFO] ✅ Passed (HREF check): בקשה לרישיון
+2026-03-19 07:05:39,137 [INFO] Testing: בדיקת סטטוס רישוי
+2026-03-19 07:05:39,162 [INFO] ✅ Passed (HREF check): בדיקת סטטוס רישוי
+2026-03-19 07:05:39,168 [INFO] Testing: אגרת רישוי עסק
+2026-03-19 07:05:39,195 [INFO] ✅ Passed (HREF check): אגרת רישוי עסק
+2026-03-19 07:05:39,213 [INFO] STATUS: FULL_FLOW_PASSED
+2026-03-19 07:05:39,218 [INFO] ✅ Full Flow - PASSED (All links are OK)
+2026-03-19 07:05:40,850 [INFO] 🛑 Closing Chrome WebDriver...
