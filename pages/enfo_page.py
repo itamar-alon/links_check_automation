@@ -17,10 +17,8 @@ class EnforcementPage(BasePage):
     Optimized with Fast Link Check & Error Screenshots.
     """
 
-    # --- Locators ---
     PAGE_TITLE = (By.TAG_NAME, "h1")
 
-    # --- Test Data ---
     TAB_1_EXTERNAL_LINKS = {
         "תשלום דו": "https://city4u.co.il/PortalServicesSite/cityPay/283000/mislaka/77",
         "הודעת תשלום קנס": "https://city4u.co.il/PortalServicesSite/cityPay/283000/mislaka/78",
@@ -45,7 +43,6 @@ class EnforcementPage(BasePage):
         title_element = self.get_element(self.PAGE_TITLE)
         return title_element.text
     
-    # 🟢 פונקציית עזר לצילום מסך
     def _take_error_screenshot(self, link_name):
         try:
             if not os.path.exists("screenshots"):
@@ -60,11 +57,9 @@ class EnforcementPage(BasePage):
         except Exception as e:
             logger.warning(f"⚠️ Failed to save screenshot: {e}")
 
-    # 🟢 הבדיקה המהירה והחכמה
     def _verify_external_link(self, link_text, expected_url_part):
         logger.info(f"Testing: {link_text}")
         
-        # 1. חיפוש האלמנט לפי טקסט
         link_locator = (By.XPATH, f"//*[contains(@role, 'button') or self::a][contains(normalize-space(.), '{link_text}')]")
         
         try:
@@ -76,12 +71,10 @@ class EnforcementPage(BasePage):
             self._take_error_screenshot(link_text)
             return
 
-        # 2. חילוץ URL ובדיקה מהירה
         href = el.get_attribute("href")
         orig_window = self.driver.current_window_handle
 
         try:
-            # אם יש href והוא מכיל את מה שאנחנו מחפשים - הצלחה מיידית!
             if href and "http" in href:
                 decoded_href = unquote(href)
                 decoded_expected = unquote(expected_url_part)
@@ -90,7 +83,6 @@ class EnforcementPage(BasePage):
                     logger.info(f"✅ Passed (HREF check): {link_text}")
                     return 
 
-            # 3. Fallback: לחיצה (אם ה-HREF לא תואם או לא קיים)
             self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", el)
             time.sleep(0.5)
             self.driver.execute_script("arguments[0].click();", el)
@@ -100,14 +92,12 @@ class EnforcementPage(BasePage):
             new_win = [w for w in self.driver.window_handles if w != orig_window][0]
             self.driver.switch_to.window(new_win)
 
-            # בדיקת URL בחלון החדש
             current_url = unquote(self.driver.current_url)
             expected_decoded = unquote(expected_url_part)
 
             if expected_decoded in current_url:
                 logger.info(f"✅ Passed: {link_text}")
             else:
-                # אזהרה בלבד על Redirect
                 logger.warning(f"⚠️ Warning: {link_text} opened but URL differs.\n   Expected: ...{expected_decoded[-20:]}\n   Got:      ...{current_url[-20:]}")
 
             self.driver.close()

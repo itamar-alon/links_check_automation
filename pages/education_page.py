@@ -18,7 +18,6 @@ class EducationPage(BasePage):
     Optimized for FAST link checking + Error Screenshots.
     """
 
-    # --- Locators ---
     PAGE_TITLE_LOCATOR = (By.XPATH, "//h2[contains(normalize-space(.), 'רישום חינוך גני ילדים')]")
     CONTENT_VALIDATOR = (By.XPATH, "//*[contains(normalize-space(.), 'הנרטיב')]")
     PRIVACY_GUARD_AUTH_BUTTON = (By.XPATH, "//button[contains(text(), 'המשך') or contains(text(), 'כניסה') or contains(text(), 'התחבר') or contains(text(), 'הזדהות')]")
@@ -26,7 +25,6 @@ class EducationPage(BasePage):
     LOGIN_IFRAME_TAG = (By.TAG_NAME, "iframe")
     INTERNAL_TAB_ONLINE_FORMS = (By.XPATH, "//*[contains(text(), 'טפסים מקוונים')]")
 
-    # --- Data Dictionaries (UPDATED BASED ON LOGS) ---
     
     DEFAULT_TAB_LINKS = {
         "הילדים העירוניים": "https://www.edu-reg.co.il/login?cid=8512834&sys=0&sub=1",
@@ -37,8 +35,8 @@ class EducationPage(BasePage):
         "על כתובת מגורים": "תצהיר מגורים תשפו  .pdf",
         "תצהיר": "תצהיר הורים עצמאיים תשפו  .pdf",
         "הסכמה והתחייבות": "rishonlezion.muni.il/Residents/Education/registrationall/",
-        "לגני הילדים": "https://www.edu-reg.co.il/login?cid=8512834&sys=0&sub=1", # Updated from sub=5 to sub=1
-        "נספח": "נספח ד מונגש .pdf", # Updated to 'מונגש'
+        "לגני הילדים": "https://www.edu-reg.co.il/login?cid=8512834&sys=0&sub=1", 
+        "נספח": "נספח ד מונגש .pdf",
         "יצירת קשר": "rishonlezion.muni.il/Lists/List21/CustomDispForm"
     }
 
@@ -47,12 +45,12 @@ class EducationPage(BasePage):
         "כתובת מגורים בעיר": "תצהיר%20מגורים%20תשפו%20%20.pdf",      
         "להורים": "תצהיר%20הורים%20עצמאיים%20תשפו%20%20.pdf",
         "לימודי חוץ": "טופס%20תצהיר%20בקשה%20ללימודי%20חוץ%20תשפו%20.pdf" ,
-        "נספח": "נספח%20ד%20מונגש%20.pdf" , # Updated from 'תשפו'
+        "נספח": "נספח%20ד%20מונגש%20.pdf" ,
         "בגן פרטי": "טופס%20בקשה%20להישארות%20שנה%20נוספת%20במעון%20.pdf" ,
         "הסכמה והתחייבות": "טופס%20הצהתשפו%20.pdf" ,
         "ויתור סודיות": "טופס%20ויתור%20סודיות%20.pdf" ,
         "ביטוח": "https://www.rishonlezion.muni.il/Activities/Pages/CityInsurance.aspx" ,
-        "להוראת קבע באשראי": "ActiveDirectory?returnUrl=%2Fappbuilder%2Fformrender%3Fprocess%3DProcessHok141" # Updated process param
+        "להוראת קבע באשראי": "ActiveDirectory?returnUrl=%2Fappbuilder%2Fformrender%3Fprocess%3DProcessHok141" 
     }
 
     TAB_3 = {
@@ -91,7 +89,7 @@ class EducationPage(BasePage):
         "חינוך התראה": "https://city4u.co.il/PortalServicesSite/cityPay/283000/mislaka/121" ,
         "תאונות אישיות": "https://city4u.co.il/PortalServicesSite/cityPay/283000/mislaka/24" ,
         "בקשה להחזר": "https://tikshuv.rishonlezion.muni.il/hito/#/portal/main" ,
-        "בקשת הצטרפות": "eFormRender.html" # Updated from 'formrender'
+        "בקשת הצטרפות": "eFormRender.html" 
     }
     
     TAB_7 = {
@@ -117,7 +115,6 @@ class EducationPage(BasePage):
         )
         return element.text
 
-    # --- Methods ---
 
     def verify_education_content(self):
         logger.info("\n--- Starting Content Validation ---")
@@ -218,16 +215,12 @@ class EducationPage(BasePage):
     def run_online_forms_link_tests(self):
         self.verify_links_from_dictionary(self.ONLINE_FORMS_LINKS, "Online Forms Internal")
 
-    # 🟢 פונקציית עזר לצילום מסך בעת שגיאה 🟢
     def _take_error_screenshot(self, link_name):
         try:
-            # יצירת תיקיית screenshots אם לא קיימת
             if not os.path.exists("screenshots"):
                 os.makedirs("screenshots")
             
-            # יצירת שם קובץ ייחודי עם זמן ושם הלינק
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            # מנקים תווים בעייתיים משם הקובץ
             safe_name = "".join([c if c.isalnum() else "_" for c in link_name])
             filename = f"screenshots/error_{safe_name}_{timestamp}.png"
             
@@ -239,7 +232,6 @@ class EducationPage(BasePage):
     def _verify_external_link(self, link_text, expected_url_part):
         logger.info(f"Testing: {link_text}")
         
-        # 1. חיפוש האלמנט
         link_locator = (By.XPATH, f"//*[contains(@role, 'button') or self::a][contains(normalize-space(.), '{link_text}')]")
         try:
             el = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(link_locator))
@@ -248,39 +240,32 @@ class EducationPage(BasePage):
             self._take_error_screenshot(link_text) 
             return
 
-        # 2. חילוץ URL ישיר (אם אפשר)
         href = el.get_attribute("href")
         
-        # 3. אם אין href או שזה כפתור JS - פתיחה מהירה בחלון חדש
         orig_window = self.driver.current_window_handle
         try:
             if href and "http" in href:
-                # בדיקה מהירה בלי ללחוץ (אם זה לינק רגיל)
                 decoded_href = unquote(href).strip()
                 decoded_expected = unquote(expected_url_part).strip()
                 if decoded_expected in decoded_href:
                     logger.info(f"✅ Passed: {link_text}")
                     return
             
-            # אם צריך ללחוץ
             self.driver.execute_script("arguments[0].scrollIntoView({block:'center'});", el)
             time.sleep(0.2)
             self.driver.execute_script("arguments[0].click();", el)
             
-            # המתנה קצרה לחלון חדש
             WebDriverWait(self.driver, 8).until(EC.number_of_windows_to_be(2))
             
             new_win = [w for w in self.driver.window_handles if w != orig_window][0]
             self.driver.switch_to.window(new_win)
             
-            # בדיקת URL מהירה - מנקים רווחים ותווים נסתרים
             current_url = unquote(self.driver.current_url).strip()
             expected_decoded = unquote(expected_url_part).strip()
 
             if expected_decoded in current_url:
                 logger.info(f"✅ Passed: {link_text}")
             else:
-                 # אזהרה (Warning) - עכשיו מדפיסה URL מלא לדיבוג קל
                  logger.warning(f"⚠️ Warning: {link_text} opened but URL differs.\n   Expected URL Part: {expected_decoded}\n   Actual Full URL: {current_url}")
             
             self.driver.close()

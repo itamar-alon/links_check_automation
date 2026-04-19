@@ -11,7 +11,6 @@ logger = logging.getLogger("SystemFlowLogger")
 class LoginPage(BasePage):
     """Class representing the Login page, supporting password login and login within a modal."""
 
-    # --- Locators for main login page ---
     PASSWORD_TAB_TEXT = "באמצעות סיסמה"
     PASSWORD_TAB = (By.XPATH, f"//button[text()='{PASSWORD_TAB_TEXT}']")
     
@@ -28,7 +27,6 @@ class LoginPage(BasePage):
         self.LOGIN_URL = url 
 
     def login_with_password(self, user_id: str, user_password: str):
-        """Performs a complete login using ID number and password on main login page."""
         
         self.go_to_url(self.LOGIN_URL)
         logger.info(f">>> Navigated to: {self.LOGIN_URL}")
@@ -66,23 +64,20 @@ class LoginPage(BasePage):
         logger.info(f">>> Successful navigation to URL containing '{home_url_part}'.")
 
     def login_with_password_inside_modal(self, id_number: str, password: str):
-        """Login inside modal with password tab selection first."""
 
         user_id_str = str(id_number)
         user_password_str = str(password)
 
-        # 1. לחיצה על טאב 'באמצעות סיסמה' במודאל
         try:
             password_tab = WebDriverWait(self.driver, 5).until(
                 EC.element_to_be_clickable((By.XPATH, "//button[normalize-space(text())='באמצעות סיסמה']"))
             )
             password_tab.click()
             logger.info(">>> Clicked 'באמצעות סיסמה' tab inside modal")
-            time.sleep(1.5)  # המתנה לטעינה
+            time.sleep(1.5) 
         except TimeoutException:
             logger.info(">>> 'באמצעות סיסמה' tab not found or already active, continuing...")
 
-        # 2. הזנת תעודת זהות
         id_input = WebDriverWait(self.driver, 10).until(
             EC.element_to_be_clickable((By.XPATH, "//input[@name='tz']"))
         )
@@ -90,7 +85,6 @@ class LoginPage(BasePage):
         id_input.send_keys(user_id_str)
         logger.info(">>> ID filled")
 
-        # 3. הזנת סיסמה
         password_input = WebDriverWait(self.driver, 10).until(
             EC.element_to_be_clickable((By.XPATH, "//input[@name='password']"))
         )
@@ -98,7 +92,6 @@ class LoginPage(BasePage):
         password_input.send_keys(user_password_str)
         logger.info(">>> Password filled")
 
-        # 4. לחיצה על כפתור כניסה בתוך המודאל
         modal_login_button = WebDriverWait(self.driver, 10).until(
             EC.element_to_be_clickable((
                 By.XPATH,
@@ -112,7 +105,6 @@ class LoginPage(BasePage):
             logger.warning(">>> Click intercepted, retrying via JS")
             self.execute_script("arguments[0].click();", modal_login_button)
 
-        # 5. המתנה שהמודאל יסגר (כדי לוודא הצלחה)
         try:
             WebDriverWait(self.driver, 10).until_not(
                 EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'MuiDialog-container') and contains(@role, 'presentation')]"))

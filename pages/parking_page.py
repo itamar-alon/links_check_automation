@@ -18,18 +18,13 @@ class ParkingPage(BasePage):
     Skips Login and Personal Info Tab as requested.
     """
 
-    # --- Locators ---
     PAGE_TITLE = (By.TAG_NAME, "h1")
     
-    # לוקייטור לטאב "תווי חניה"
     TAB_3_LOCATOR = (By.XPATH, "//button[contains(text(), 'תווי חניה')]")
     
-    # לוקייטור גנרי לקישורים
     GENERIC_LINK_XPATH = "//*[contains(@role, 'button') or self::a][contains(normalize-space(.), '{}')]"
 
-    # --- Data Dictionaries ---
-    
-    # טאב 1: דו"חות חניה (ברירת מחדל)
+
     TAB_1_EXTERNAL_LINKS = {
         "תשלום דו": "https://www.city4u.co.il/PortalServicesSite/cityPay/283000/mislaka/4",
         "הודעת תשלום קנס": "https://www.city4u.co.il/PortalServicesSite/cityPay/283000/mislaka/16",
@@ -38,7 +33,6 @@ class ParkingPage(BasePage):
         "שובר דחיית ערעור": "https://www.city4u.co.il/PortalServicesSite/cityPay/283000/mislaka/36"
     }
 
-    # טאב 3: תווי חניה
     TAB_3_EXTERNAL_LINKS = {
         "רשימת אזורי חניה": "https://www.rishonlezion.muni.il/Residents/Transportation/Parking/Pages/LocalParkingTicketArea.aspx?prm=920082-1&language=he",
         "פירוט חניונים": "https://www.rishonlezion.muni.il/Residents/Transportation/Parking/Pages/Cityparking.aspx?prm=920082-1&language=he",
@@ -61,7 +55,6 @@ class ParkingPage(BasePage):
         title_element = self.get_element(self.PAGE_TITLE)
         return title_element.text
 
-    # 🟢 פונקציית עזר לצילום מסך
     def _take_error_screenshot(self, link_name):
         try:
             if not os.path.exists("screenshots"):
@@ -76,11 +69,9 @@ class ParkingPage(BasePage):
         except Exception as e:
             logger.warning(f"⚠️ Failed to save screenshot: {e}")
 
-    # 🟢 הבדיקה המהירה (HREF Check)
     def _verify_external_link(self, link_text, expected_url_part):
         logger.info(f"Testing: {link_text}")
         
-        # 1. חיפוש האלמנט
         locator = (By.XPATH, self.GENERIC_LINK_XPATH.format(link_text))
         
         try:
@@ -92,12 +83,10 @@ class ParkingPage(BasePage):
             self._take_error_screenshot(link_text)
             return
 
-        # 2. חילוץ URL ובדיקה מהירה
         href = el.get_attribute("href")
         orig_window = self.driver.current_window_handle
 
         try:
-            # בדיקה מהירה ללא לחיצה
             if href and "http" in href:
                 decoded_href = unquote(href)
                 decoded_expected = unquote(expected_url_part)
@@ -106,7 +95,6 @@ class ParkingPage(BasePage):
                     logger.info(f"✅ Passed: {link_text}")
                     return 
 
-            # 3. Fallback: לחיצה (אם ה-HREF לא תואם או חסר)
             self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", el)
             time.sleep(0.5)
             self.driver.execute_script("arguments[0].click();", el)
@@ -134,7 +122,6 @@ class ParkingPage(BasePage):
             try: self.driver.switch_to.window(orig_window)
             except: pass
 
-    # --- פונקציות ניווט והרצה ---
 
     def run_tab_1_external_link_tests(self):
         logger.info("\n--- Starting Fast Link Check (Tab 1 - Fines) ---")

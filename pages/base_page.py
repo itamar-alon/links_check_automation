@@ -8,7 +8,6 @@ import logging
 logger = logging.getLogger("SystemFlowLogger")
 
 class BasePage:
-    """ מחלקת בסיס המכילה פעולות נפוצות ואימות HTTP. """
     
     DEFAULT_WAIT_TIME = 10
     
@@ -21,57 +20,45 @@ class BasePage:
         return WebDriverWait(self.driver, timeout if timeout is not None else self.DEFAULT_WAIT_TIME)
 
     def dismiss_cookie_banner(self):
-        """ מנסה לסגור את באנר העוגיות בצורה חלקה ושקטה, בלי לזרוק Stacktrace ללוג """
         try:
-            # מחפש כפתורי אישור נפוצים. אפשר לדייק את ה-XPATH לפי הבאנר הספציפי באתר
             cookie_btn = self.driver.find_element(By.XPATH, "//button[contains(text(), 'מאשר') or contains(text(), 'אישור') or contains(text(), 'הבנתי')]")
             cookie_btn.click()
             logger.info("🍪 Cookie banner closed successfully.")
         except NoSuchElementException:
-            # מתעלמים בשקט - הבאנר פשוט לא שם
             pass
         except Exception as e:
-            # מדפיסים רק שורת אזהרה קצרה במקום Stacktrace שלם אם משהו אחר השתבש
             logger.debug(f"⚠️ Cookie banner present but could not be clicked (ignoring).")
 
     def validate_link_status(self, url):
-        """ בודק שהקישור מחזיר סטטוס 200 ללא טעינת הדף בדפדפן ומעדכן רשימת לינקים שבורים. """
         
-        # מוסיפים User-Agent כדי שהשרת לא יחסום את פייתון ויחשוב שזה בוט (מניעת שגיאות 403)
         headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
         }
         
         try:
-            # שימוש ב-HEAD למהירות מירבית
             response = requests.head(url, allow_redirects=True, timeout=5, headers=headers)
-            if response.status_code >= 400: # אם HEAD נכשל, ננסה GET
+            if response.status_code >= 400:
                 response = requests.get(url, allow_redirects=True, timeout=5, stream=True, headers=headers)
             
             is_success = response.status_code == 200
             
-            # עדכון רשימת הלינקים השבורים בדרייבר אם הסטטוס אינו 200
             if not is_success:
                 self._record_broken_link(url, response.status_code)
                 
             return is_success, response.status_code
             
         except Exception as e:
-            # במקרה של שגיאת התחברות (Timeout, DNS וכו')
             self._record_broken_link(url, str(e))
             return False, str(e)
 
     def _record_broken_link(self, url, reason):
-        """ פונקציית עזר פנימית לרישום הלינק השבור בדרייבר """
         if hasattr(self.driver, 'broken_links_list'):
             entry = f"URL: {url} | Reason/Status: {reason}"
             if entry not in self.driver.broken_links_list:
                 self.driver.broken_links_list.append(entry)
-                # הוספת לוג: ברגע שמתגלה לינק שבור בזמן אמת, זה נכתב לקובץ!
                 logger.warning(f"⚠️ Broken link recorded: {entry}")
 
     def go_to_url(self, url):
-        # תיעוד מעבר בין עמודים
         logger.info(f"Navigating to URL: {url}")
         self.driver.get(url)
 
@@ -84,7 +71,6 @@ class BasePage:
         try:
             return self._get_wait(timeout).until(EC.visibility_of_element_located(by_locator))
         except TimeoutException as e:
-            # תיעוד שגיאה למקרה שאלמנט לא הופיע
             logger.error(f"❌ Element not visible within timeout: {by_locator}")
             raise e
 
@@ -92,7 +78,6 @@ class BasePage:
         try:
             return self._get_wait(timeout).until(EC.element_to_be_clickable(by_locator))
         except TimeoutException as e:
-            # תיעוד שגיאה למקרה שאלמנט לא ניתן ללחיצה
             logger.error(f"❌ Element not clickable within timeout: {by_locator}")
             raise e
 
@@ -100,6 +85,5 @@ class BasePage:
         try:
             self._get_wait(timeout).until(EC.url_contains(url_part))
         except TimeoutException as e:
-            # תיעוד שגיאה למקרה שה-URL לא השתנה כמצופה
             logger.error(f"❌ URL did not contain '{url_part}' within timeout.")
             raise e

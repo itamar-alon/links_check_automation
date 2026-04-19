@@ -7,7 +7,6 @@ import time
 from datetime import datetime
 import sys
 
-# --- 1. Path Setup ---
 current_file_path = Path(__file__).resolve()
 project_root = current_file_path.parent.parent
 if str(project_root) not in sys.path:
@@ -15,11 +14,9 @@ if str(project_root) not in sys.path:
 
 from pages.login_page import LoginPage
 
-# Get the central logger
 logger = logging.getLogger("SystemFlowLogger")
 
 def test_login_flow(driver, secrets):
-    # --- 2. Configuration ---
     if not secrets:
         logger.error("❌ Error loading secrets.")
         pytest.fail("Error loading secrets.")
@@ -37,17 +34,13 @@ def test_login_flow(driver, secrets):
     SCREENSHOT_DIR = project_root / "screenshots"
     SCREENSHOT_DIR.mkdir(exist_ok=True)
 
-    # --- 3. Start Test ---
     try:
         logger.info("🚀 Starting Login Test")
         
-        # Initialize the Page Object
         login_page = LoginPage(driver, LOGIN_URL)
 
-        # Perform login
         login_page.login_with_password(USER_ID, USER_PASSWORD)
 
-        # Wait for successful navigation
         login_page.wait_for_successful_login(HOME_URL_PART)
 
         logger.info("✅ Login confirmed successfully.")

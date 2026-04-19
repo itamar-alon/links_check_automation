@@ -9,7 +9,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-# --- Path Fix ---
 current_file_path = Path(__file__).resolve()
 project_root = current_file_path.parent.parent
 if str(project_root) not in sys.path:
@@ -23,11 +22,19 @@ from pages.street_page import StreetPage
 from pages.water_page import WaterPage
 from pages.parking_page import ParkingPage
 
-# Get the central logger from conftest
 logger = logging.getLogger("SystemFlowLogger")
 
-
-# --- The Test ---
+def capture_failure(driver, module_name, screenshot_dir):
+    """Helper to capture screenshot and attach to allure on local failure"""
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    name = f"failed_{module_name}_{timestamp}.png"
+    path = str(screenshot_dir / name)
+    try:
+        driver.save_screenshot(path)
+        allure.attach(driver.get_screenshot_as_png(), name=name, attachment_type=allure.attachment_type.PNG)
+        logger.error(f"📸 Screenshot saved for {module_name} failure: {path}")
+    except Exception as e:
+        logger.error(f"⚠️ Failed to take screenshot for {module_name}: {e}")
 
 @allure.feature("End-to-End System Flow")
 @allure.story("Verify all municipal modules in one run")
@@ -36,29 +43,28 @@ def test_full_system_flow(driver, secrets):
     SCREENSHOT_DIR = project_root / "screenshots"
     SCREENSHOT_DIR.mkdir(exist_ok=True)
     
-    try:
-        logger.info("🚀 Starting Full System Flow Test")
-        
-        # שליפת נתונים
-        user_data = secrets.get('user_data', {})
-        USER_ID = user_data.get('id_number')
-        PASSWORD = user_data.get('password')
+    failures = [] 
+    
+    logger.info("🚀 Starting Full System Flow Test")
+    
+    user_data = secrets.get('user_data', {})
+    USER_ID = user_data.get('id_number')
+    PASSWORD = user_data.get('password')
 
-        if not USER_ID or not PASSWORD:
-            logger.error("❌ Missing credentials in secrets.json")
-            pytest.fail("❌ Missing credentials in secrets.json")
+    if not USER_ID or not PASSWORD:
+        logger.error("❌ Missing credentials in secrets.json")
+        pytest.fail("❌ Missing credentials in secrets.json")
 
-        # ==========================================
-        # 1. Daycare (צהרונים)
-        # ==========================================
-        with allure.step("Checking Daycare Interface"):
+    # ==========================================
+    # 1. Daycare (צהרונים)
+    # ==========================================
+    with allure.step("Checking Daycare Interface"):
+        try:
             url = secrets.get('daycare_url')
             if url:
                 logger.info(f"Testing Daycare: {url}")
                 daycare = DaycarePage(driver, url)
                 daycare.open_daycare_page()
-                
-                # --- שימוש נקי בפונקציה מה-BasePage ---
                 daycare.dismiss_cookie_banner()
                 
                 title = daycare.get_page_title()
@@ -70,11 +76,16 @@ def test_full_system_flow(driver, secrets):
                 daycare.run_tab_2_external_link_tests()
             else:
                 logger.warning("⚠️ Daycare URL missing from secrets, skipping.")
+        except Exception as e:
+            logger.error(f"❌ Module Daycare Failed: {e}")
+            capture_failure(driver, "Daycare", SCREENSHOT_DIR)
+            failures.append(f"Daycare: {str(e)}")
 
-        # ==========================================
-        # 2. Education (חינוך)
-        # ==========================================
-        with allure.step("Checking Education Interface"):
+    # ==========================================
+    # 2. Education (חינוך)
+    # ==========================================
+    with allure.step("Checking Education Interface"):
+        try:
             url = secrets.get('education_url')
             if url:
                 logger.info(f"Testing Education: {url}")
@@ -83,7 +94,6 @@ def test_full_system_flow(driver, secrets):
                 edu.verify_education_content()
                 edu.run_default_tab_external_link_tests()
 
-                # מיפוי טאבים
                 EDU_TABS_MAP = {
                     "רישום חינוך יסודי": edu.TAB_3,
                     "רישום חינוך על יסודי": edu.TAB_4,
@@ -113,11 +123,16 @@ def test_full_system_flow(driver, secrets):
                             edu.verify_links_from_dictionary(EDU_TABS_MAP[tab], tab)
             else:
                 logger.warning("⚠️ Education URL missing from secrets, skipping.")
+        except Exception as e:
+            logger.error(f"❌ Module Education Failed: {e}")
+            capture_failure(driver, "Education", SCREENSHOT_DIR)
+            failures.append(f"Education: {str(e)}")
 
-        # ==========================================
-        # 3. Enforcement (פיקוח)
-        # ==========================================
-        with allure.step("Checking Enforcement Interface"):
+    # ==========================================
+    # 3. Enforcement (פיקוח)
+    # ==========================================
+    with allure.step("Checking Enforcement Interface"):
+        try:
             url = secrets.get('enforcement_url')
             if url:
                 logger.info(f"Testing Enforcement: {url}")
@@ -126,11 +141,16 @@ def test_full_system_flow(driver, secrets):
                 enfo.run_tab_1_external_link_tests()
             else:
                 logger.warning("⚠️ Enforcement URL missing from secrets, skipping.")
+        except Exception as e:
+            logger.error(f"❌ Module Enforcement Failed: {e}")
+            capture_failure(driver, "Enforcement", SCREENSHOT_DIR)
+            failures.append(f"Enforcement: {str(e)}")
 
-        # ==========================================
-        # 4. Parking (חניה)
-        # ==========================================
-        with allure.step("Checking Parking Interface"):
+    # ==========================================
+    # 4. Parking (חניה)
+    # ==========================================
+    with allure.step("Checking Parking Interface"):
+        try:
             url = secrets.get('parking_url')
             if url:
                 logger.info(f"Testing Parking: {url}")
@@ -141,11 +161,16 @@ def test_full_system_flow(driver, secrets):
                 parking.run_tab_3_external_link_tests()
             else:
                 logger.warning("⚠️ Parking URL missing from secrets, skipping.")
+        except Exception as e:
+            logger.error(f"❌ Module Parking Failed: {e}")
+            capture_failure(driver, "Parking", SCREENSHOT_DIR)
+            failures.append(f"Parking: {str(e)}")
 
-        # ==========================================
-        # 5. Street Info (מידע הנדסי)
-        # ==========================================
-        with allure.step("Checking Street Info Interface"):
+    # ==========================================
+    # 5. Street Info (מידע הנדסי)
+    # ==========================================
+    with allure.step("Checking Street Info Interface"):
+        try:
             url = secrets.get('street_url')
             if url:
                 logger.info(f"Testing Street Info: {url}")
@@ -155,11 +180,16 @@ def test_full_system_flow(driver, secrets):
                 street.expand_and_verify_popup()
             else:
                 logger.warning("⚠️ Street Info URL missing from secrets, skipping.")
+        except Exception as e:
+            logger.error(f"❌ Module Street Failed: {e}")
+            capture_failure(driver, "StreetInfo", SCREENSHOT_DIR)
+            failures.append(f"StreetInfo: {str(e)}")
 
-        # ==========================================
-        # 6. Water (מים)
-        # ==========================================
-        with allure.step("Checking Water Interface"):
+    # ==========================================
+    # 6. Water (מים)
+    # ==========================================
+    with allure.step("Checking Water Interface"):
+        try:
             url = secrets.get('water_url')
             if url:
                 logger.info(f"Testing Water: {url}")
@@ -172,11 +202,16 @@ def test_full_system_flow(driver, secrets):
                 water.run_tab_3_external_link_tests()
             else:
                 logger.warning("⚠️ Water URL missing from secrets, skipping.")
+        except Exception as e:
+            logger.error(f"❌ Module Water Failed: {e}")
+            capture_failure(driver, "Water", SCREENSHOT_DIR)
+            failures.append(f"Water: {str(e)}")
 
-        # ==========================================
-        # 7. Business License (רישוי עסקים)
-        # ==========================================
-        with allure.step("Checking Business License Interface"):
+    # ==========================================
+    # 7. Business License (רישוי עסקים)
+    # ==========================================
+    with allure.step("Checking Business License Interface"):
+        try:
             url = secrets.get('business_url')
             if url:
                 logger.info(f"Testing Business License: {url}")
@@ -189,47 +224,32 @@ def test_full_system_flow(driver, secrets):
                 business.run_tab_3_external_link_tests()
             else:
                 logger.warning("⚠️ Business License URL missing from secrets, skipping.")
+        except Exception as e:
+            logger.error(f"❌ Module Business Failed: {e}")
+            capture_failure(driver, "BusinessLicense", SCREENSHOT_DIR)
+            failures.append(f"BusinessLicense: {str(e)}")
 
-    except Exception as e:
-        timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        screenshot_name = f"full_flow_critical_failure_{timestamp}.png"
-        screenshot_path = str(SCREENSHOT_DIR / screenshot_name)
+    # ==========================================
+    # FINAL VALIDATION
+    # ==========================================
+    broken_links = getattr(driver, 'broken_links_list', []) if driver else []
+    count = len(broken_links)
+
+    if failures or count > 0:
+        summary_msg = f"Found {len(failures)} module failures and {count} broken links."
+        logger.error(f"❌ FULL FLOW FAILED Summary: {summary_msg}")
         
-        # עדכון לוג עבור גרפנה - כישלון עקב קריסת הסקריפט
-        logger.error(f"STATUS: FULL_FLOW_FAILED | Reason: Exception occurred - {e}")
-        logger.error(f"\n❌ FULL FLOW TEST FAILED (Critical)")
+        allure.dynamic.title(f"Full Flow - FAILED (Errors: {len(failures)} | Broken: {count})")
         
-        if driver:
-            try:
-                driver.save_screenshot(screenshot_path)
-                logger.error(f"📸 Screenshot saved to: {screenshot_path}")
-                allure.attach(driver.get_screenshot_as_png(), name=screenshot_name, attachment_type=allure.attachment_type.PNG)
-            except Exception as screenshot_error:
-                logger.error(f"⚠️ Could not take screenshot: {screenshot_error}")
-            
-            time.sleep(5)
-            
-        raise e
-
-    finally:
-        import sys
-        # בדיקה אם הדרייבר קיים לפני שליפת לינקים שבורים
-        broken_links = getattr(driver, 'broken_links_list', []) if driver else []
-        count = len(broken_links)
-
-        # מקרה 1: הסקריפט לא קרס אבל נמצאו לינקים שבורים
-        if count > 0 and sys.exc_info()[0] is None:
-            logger.error(f"STATUS: FULL_FLOW_FAILED | Reason: Found {count} broken links")
-            logger.warning(f"🚨 Summary: Found {count} broken links")
-            for i, link in enumerate(broken_links, 1):
-                logger.error(f"Broken Link #{i}: {link}")
-
-            allure.dynamic.title(f"Full Flow - FAILED (Found {count} broken links)")
-            with allure.step(f"🚨 Summary: Found {count} broken links"):
-                allure.attach("\n".join(broken_links), name="List of Broken Links", attachment_type=allure.attachment_type.TEXT)
-
-        # מקרה 2: הצלחה מלאה - אין קריסה ואין לינקים שבורים
-        elif count == 0 and sys.exc_info()[0] is None:
-            logger.info("STATUS: FULL_FLOW_PASSED")
-            logger.info("✅ Full Flow - PASSED (All links are OK)")
-            allure.dynamic.title("Full Flow - PASSED (All links are OK)")
+        if failures:
+            with allure.step("Module Failures Details"):
+                allure.attach("\n".join(failures), name="Module Exceptions", attachment_type=allure.attachment_type.TEXT)
+        
+        if count > 0:
+            with allure.step(f"Broken Links Details ({count})"):
+                allure.attach("\n".join(broken_links), name="Broken Links List", attachment_type=allure.attachment_type.TEXT)
+        
+        pytest.fail(f"❌ Test finished with errors. Modules: {len(failures)}, Broken Links: {count}")
+    else:
+        logger.info("✅ STATUS: FULL_FLOW_PASSED - All modules and links are OK")
+        allure.dynamic.title("Full Flow - PASSED (All modules and links are OK)")

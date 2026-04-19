@@ -126,7 +126,6 @@ class WaterPage(BasePage):
         else:
             logger.info(f"✅ OK (Attribute Match, local link skipped HTTP check): {link_text}")
 
-    # 🟢 פונקציות ניווט מעודכנות
     def navigate_to_tab_2(self):
         logger.info(f"\n--- Navigating to Tab 2: {self.TAB_BUTTON_NAME_2} ---")
         self._switch_tab(self.TAB_2_LOCATOR)

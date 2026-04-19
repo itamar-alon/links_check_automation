@@ -10,7 +10,6 @@ from datetime import datetime
 import logging
 import pytest
 
-# --- 1. Path Setup ---
 current_file_path = Path(__file__).resolve()
 project_root = current_file_path.parent.parent
 if str(project_root) not in path:
@@ -18,11 +17,9 @@ if str(project_root) not in path:
 
 from pages.street_page import StreetPage 
 
-# שאיבת הלוגר המרכזי
 logger = logging.getLogger("SystemFlowLogger")
 
 def test_street_flow(driver, secrets):
-    # --- 2. Configuration ---
     if not secrets:
         logger.error("❌ Error loading secrets.")
         pytest.fail("Error loading secrets.")
@@ -35,7 +32,6 @@ def test_street_flow(driver, secrets):
     SCREENSHOT_DIR = project_root / "screenshots"
     SCREENSHOT_DIR.mkdir(exist_ok=True)
 
-    # --- 3. Start Test ---
     try:
         logger.info("🚀 Starting Street Info Test")
         
@@ -46,18 +42,15 @@ def test_street_flow(driver, secrets):
         wait = WebDriverWait(driver, 10)
         
         try:
-            # 1. Attempt to locate search box (Best indicator page is working)
             search_box_locator = (By.XPATH, "//input | //*[contains(text(), 'שם הרחוב')]")
             wait.until(EC.presence_of_element_located(search_box_locator))
             logger.info("✅ Search component found on page.")
         except:
-            # 2. If not found, check if redirected to login
             if "login" in driver.current_url.lower():
                 raise Exception("❌ Redirected to Login page. Authentication might be required to view street info.")
             else:
                 raise Exception("❌ Page loaded but Search field is missing. Content might be restricted.")
 
-        # --- Step C: Run Data Verification Flow ---
         logger.info(">>> Starting street search and data verification...")
         street_page.search_and_verify_table() 
         

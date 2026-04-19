@@ -1,43 +1,59 @@
 # secrets_loader.py
 
-import json
+import os
+from dotenv import load_dotenv
 from pathlib import Path
 
-def load_secrets(file_name="secrets.json"):
+def load_secrets():
     """
-    Loads configuration data from a JSON file using an absolute path calculation.
-    The code assumes that the secrets.json file is located in the project root,
+    Loads configuration data from a .env file using an absolute path calculation.
+    The code assumes that the .env file is located in the project root,
     three levels above this file.
     """
     
     # 1. Determine the absolute path of the secrets_loader.py file
     script_path = Path(__file__).resolve() 
     
-    # 2. Calculate the project root (move up from utils/ to tests/ and then to SELENIUM SCRIPTS/)
-    # Since the file is in tests/utils/, we need to move up three levels.
-    project_root = script_path.parent.parent.parent 
+    # 2. Calculate the project root (move up from utils/ to tests/ and then to links/)
+    project_root = script_path.parent.parent.parent
     
-    # Note: Structure is SELENIUM SCRIPTS -> tests -> utils -> secrets_loader.py
+    # 3. Build the full path to the .env file
+    dotenv_path = project_root / ".env"
     
-    # 3. Build the full path to the secrets.json file
-    file_path = project_root / file_name
+    # Print the path being passed to load_dotenv()
+    print(f"*** Attempting to load .env from absolute path: {dotenv_path}") 
     
-    # Print the path being passed to open()
-    print(f"*** Attempting to load data from absolute path: {file_path}") 
-    
-    try:
-        # Opening the file
-        with open(file_path, 'r', encoding='utf-8') as f:
-            return json.load(f)
-    except FileNotFoundError:
-        print(f"❌ Error: File {file_path} not found. Ensure it is located in the project root.")
+    # Load environment variables from .env file
+    load_dotenv(dotenv_path=dotenv_path)
+
+    # Retrieve all credentials using os.getenv()
+    secrets = {
+        'business_url': os.getenv('BUSINESS_URL'),
+        'daycare_url': os.getenv('DAYCARE_URL'),
+        'education_url': os.getenv('EDUCATION_URL'),
+        'enforcement_url': os.getenv('ENFORCEMENT_URL'),
+        'login_url': os.getenv('LOGIN_URL'),
+        'parking_url': os.getenv('PARKING_URL'),
+        'street_url': os.getenv('STREET_URL'),
+        'water_url': os.getenv('WATER_URL'),
+        'home_url_part': os.getenv('HOME_URL_PART'),
+        'user_data': {
+            'id_number': os.getenv('ID_NUMBER'),
+            'password': os.getenv('PASSWORD')
+        }
+    }
+
+    # Basic validation to ensure essential variables are loaded
+    if not secrets['business_url']: # Check one of the URLs as a sample
+        print(f"❌ Error: Environment variables not found. Ensure .env file exists at {dotenv_path} and is configured correctly.")
         return None
-    except json.JSONDecodeError:
-        print(f"❌ Error: File {file_path} is not in a valid JSON format. Ensure it is not empty.")
-        return None
+        
+    return secrets
 
 # --- Verification ---
 if __name__ == '__main__':
     data = load_secrets()
     if data:
         print("\n✅ Secrets loading successful!")
+        # Optional: Print loaded data for verification, but be careful with sensitive info
+        # print(f"Loaded data: {data}")

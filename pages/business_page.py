@@ -17,11 +17,9 @@ class BusinessLicensePage(BasePage):
     Optimized for FAST link checking + Error Screenshots.
     """
 
-    # --- Locators ---
     PAGE_TITLE = (By.TAG_NAME, "h1")
     GENERIC_LINK_XPATH = "//*[contains(@role, 'button') or self::a][contains(normalize-space(.), '{}')]"
     
-    # טאבים
     TAB_BUTTON_NAME_2 = "דרישות ותנאים, מפרטים והיתרים"
     TAB_BUTTON_NAME_3 = "טפסים"
     
@@ -31,15 +29,12 @@ class BusinessLicensePage(BasePage):
     TAB_2_URL_PART = "tab=1"
     TAB_3_URL_PART = "tab=2"
 
-    # --- Test Links Data ---
     
-    # טאב 1 (ברירת מחדל)
     TAB_1_LINKS = {
         "שלבים ב": "rishonlezion.muni.il/Business/BusinessLicense/Pages/NewBusiness.aspx",
         "הגשת בקשה": "por141.cityforms.co.il/ApplicationBuilder/eFormRender.html",
     }
     
-    # טאב 2
     TAB_2_LINKS = {
         "רישיון לניהול עסק": "rishonlezion.muni.il/Business/BusinessLicense/Pages/License.aspx",
         "דרישות ותנאים לקבלת רישיון עסק": "default.aspx",
@@ -48,7 +43,6 @@ class BusinessLicensePage(BasePage):
         "דרישות לנגישות עסקים": "Accessibility.aspx",
     }
     
-    # טאב 3
     TAB_3_LINKS = {
         "ושולחנות ומתקני": "TableAndChairsPermit141",
         "שולחנות וכיסאות": "cityPay/283000/mislaka/48",
@@ -70,7 +64,6 @@ class BusinessLicensePage(BasePage):
         title_element = self.get_element(self.PAGE_TITLE)
         return title_element.text
 
-    # 🟢 צילום מסך בשגיאה
     def _take_error_screenshot(self, link_name):
         try:
             if not os.path.exists("screenshots"):
@@ -83,7 +76,6 @@ class BusinessLicensePage(BasePage):
         except Exception as e:
             logger.warning(f"⚠️ Failed to save screenshot: {e}")
 
-    # 🟢 בדיקה מהירה (HREF)
     def _verify_external_link(self, link_text, expected_url_part):
         logger.info(f"Testing: {link_text}")
         
@@ -102,7 +94,6 @@ class BusinessLicensePage(BasePage):
         orig_window = self.driver.current_window_handle
 
         try:
-            # בדיקה מהירה ללא לחיצה
             if href and "http" in href:
                 decoded_href = unquote(href)
                 decoded_expected = unquote(expected_url_part)
@@ -110,7 +101,6 @@ class BusinessLicensePage(BasePage):
                     logger.info(f"✅ Passed (HREF check): {link_text}")
                     return 
 
-            # Fallback: Click
             self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", el)
             time.sleep(0.5)
             self.driver.execute_script("arguments[0].click();", el)
@@ -138,15 +128,12 @@ class BusinessLicensePage(BasePage):
             try: self.driver.switch_to.window(orig_window)
             except: pass
 
-    # --- פונקציות הרצה (תואמות ל-Test File) ---
 
-    # טאב 1 (שונה השם ל-run_tab_1 כדי להתאים לשגיאה שלך)
     def run_tab_1_external_link_tests(self):
         logger.info("\n--- Starting Fast Link Check (Business - Tab 1) ---")
         for link_name, url_part in self.TAB_1_LINKS.items():
             self._verify_external_link(link_name, url_part)
 
-    # ניווט לטאב 2
     def navigate_to_tab_2(self):
         logger.info(f"\n--- Navigating to Tab 2: {self.TAB_BUTTON_NAME_2} ---")
         try:
@@ -165,7 +152,6 @@ class BusinessLicensePage(BasePage):
         for link_name, url_part in self.TAB_2_LINKS.items():
             self._verify_external_link(link_name, url_part)
 
-    # ניווט לטאב 3
     def navigate_to_tab_3(self):
         logger.info(f"\n--- Navigating to Tab 3: {self.TAB_BUTTON_NAME_3} ---")
         try:

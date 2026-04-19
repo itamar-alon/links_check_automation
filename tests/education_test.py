@@ -7,7 +7,6 @@ from datetime import datetime
 import logging
 import pytest
 
-# --- 1. Path Setup ---
 current_file_path = Path(__file__).resolve()
 project_root = current_file_path.parent.parent
 if str(project_root) not in path:
@@ -16,11 +15,9 @@ if str(project_root) not in path:
 from tests.utils.secrets_loader import load_secrets
 from pages.education_page import EducationPage
 
-# שאיבת הלוגר המרכזי
 logger = logging.getLogger("SystemFlowLogger")
 
 def test_education_flow(driver, secrets):
-    # --- 2. Configuration ---
     if not secrets:
         logger.error("❌ Error loading secrets.")
         pytest.fail("Error loading secrets.")
@@ -37,7 +34,6 @@ def test_education_flow(driver, secrets):
     SCREENSHOT_DIR = project_root / "screenshots"
     SCREENSHOT_DIR.mkdir(exist_ok=True)
 
-    # --- 3. Start Test ---
     try:
         logger.info("🚀 Starting Education Interface Test")
         
@@ -47,7 +43,6 @@ def test_education_flow(driver, secrets):
         education_page.verify_education_content()
         education_page.run_default_tab_external_link_tests()
 
-        # 🟢 מיפוי: איזה מילון מתאים לאיזה טאב
         TABS_DATA_MAP = {
             "רישום חינוך יסודי": education_page.TAB_3,
             "רישום חינוך על יסודי": education_page.TAB_4,
@@ -68,7 +63,6 @@ def test_education_flow(driver, secrets):
         for tab in side_tabs:
             education_page.navigate_to_side_tab(tab)
 
-            # לוגיקה ייחודית לתיק תלמיד
             if tab == "תיק תלמיד":
                 logger.info(f"🛑 Reached '{tab}' - Initiating Login...")
                 success = education_page.perform_student_login(STUDENT_ID, STUDENT_PASS)
@@ -79,7 +73,6 @@ def test_education_flow(driver, secrets):
                     education_page.run_online_forms_link_tests()
                 continue
 
-            # לוגיקה לשאר הטאבים
             if tab in TABS_DATA_MAP:
                 links_dict = TABS_DATA_MAP[tab]
                 education_page.verify_links_from_dictionary(links_dict, tab)

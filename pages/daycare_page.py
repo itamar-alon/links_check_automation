@@ -17,18 +17,14 @@ class DaycarePage(BasePage):
     OPTIMIZED: Includes Fast HREF Checking (Smart Verify).
     """
 
-    # --- Locators ---
     PAGE_TITLE = (By.TAG_NAME, "h1")
-    # אותו לוקייטור חכם כמו במים - תופס גם כפתורים וגם לינקים לפי טקסט
     GENERIC_LINK_XPATH = "//*[contains(@role, 'button') or self::a][contains(normalize-space(.), '{}')]"
 
-    # שם הטאב השני
     TAB_BUTTON_NAME = "מעונות יום"
-    TAB_2_URL_PART = "?tab=1" # בצהרונים הניווט הוא דרך URL שזה מצוין ומהיר
+    TAB_2_URL_PART = "?tab=1" 
 
-    # --- נתונים (עודכנו לבדיקה מהירה - רק חלקים ייחודיים מה-URL) ---
     TAB_1_EXTERNAL_LINKS = {
-        "איזור אישי": "cewz20",  # קיצרתי כדי שזה ימצא את זה ב-href
+        "איזור אישי": "cewz20", 
         "רישום לצהרוני בית הספר": "cewz20",
     }
     
@@ -40,7 +36,7 @@ class DaycarePage(BasePage):
 
     def __init__(self, driver, url):
         super().__init__(driver)
-        self.DEFAULT_TIMEOUT = 3 # זמן המתנה קצר כי אנחנו רוצים לרוץ מהר
+        self.DEFAULT_TIMEOUT = 3 
         self.DAYCARE_URL = url
 
     def open_daycare_page(self):
@@ -61,17 +57,12 @@ class DaycarePage(BasePage):
         except:
             pass
 
-    # 🟢 זו הפונקציה החכמה שהעתקנו מ-WaterPage
     def _verify_external_link(self, link_text, expected_url_part):
         logger.info(f"Testing: {link_text}...") 
         
-        # שימוש בלוקייטור הגנרי החכם
         locator = (By.XPATH, self.GENERIC_LINK_XPATH.format(link_text))
         
-        # טיפול מיוחד ל"חרצית" אם הלוקייטור הגנרי לא מוצא אותו (אופציונלי)
         if "חרצית" in link_text:
-             # אם האתר משתמש במבנה מוזר לחרצית, אפשר לדרוס את הלוקייטור כאן
-             # כרגע ננסה עם הגנרי, לרוב זה עובד
              pass 
 
         try:
@@ -85,19 +76,14 @@ class DaycarePage(BasePage):
 
         href = el.get_attribute("href")
         
-        # ניקוי ה-URLים להשוואה קלה יותר
         clean_href = unquote(href).replace("https://", "").replace("http://", "") if href else ""
         clean_expected = unquote(expected_url_part).replace("https://", "").replace("http://", "")
 
-        # 🚀 בדיקה מהירה 1: האם הציפייה נמצאת ב-HREF?
         if clean_expected in clean_href:
             logger.info(f"✅ OK (HREF): {link_text}")
             return 
 
-        # 🚀 בדיקה מהירה 2: אם זה לינק מקוצר (rb.gy), לפעמים ה-HREF שונה מהיעד הסופי
-        # כאן אנחנו נאלצים ללחוץ
-        
-        # Fallback: לחיצה (רק אם הבדיקה המהירה נכשלה)
+
         logger.warning(f"⚠️ Mismatch for '{link_text}' ('{clean_expected}' not in '{clean_href[:20]}...'), clicking...")
         
         orig_window = self.driver.current_window_handle
@@ -126,7 +112,6 @@ class DaycarePage(BasePage):
             logger.error(f"❌ Click Failed for {link_text}: {e}")
             self.driver.switch_to.window(orig_window)
 
-    # --- פונקציות הרצה ---
 
     def run_tab_1_external_link_tests(self):
         logger.info("\n--- Starting Fast Link Check (Daycare - Tab 1) ---")
@@ -138,7 +123,6 @@ class DaycarePage(BasePage):
         target_url = self.DAYCARE_URL + self.TAB_2_URL_PART
         self.go_to_url(target_url)
         logger.info(f"\n>>> Navigating to Tab 2: {target_url}")
-        # השארתי זמן קצר לטעינה, כי בשינוי URL הדף מתרענן לגמרי
         time.sleep(2) 
 
     def run_tab_2_external_link_tests(self):
