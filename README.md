@@ -44,14 +44,16 @@ Plaintext
 └── README.md
 ⚙️ Installation & Setup
 1. Clone the Repository
+2. 
 Bash
+git clone https://github.com/itamar-alon/links_check_automation.git
+cd links_check_automation
 
-git clone https://github.com/YourUsername/rishon-automation.git
-cd rishon-automation
-2. Install Dependencies
+4. Install Dependencies
+   
 Bash
-
 pip install -r requirements.txt
+
 3. Configuration (secrets.json)
 Create a secrets.json file in the root directory. This file is ignored by Git to protect sensitive data. Template:
 
@@ -70,19 +72,17 @@ JSON
         "password": "YOUR_PASSWORD"
     }
 }
+
 🏃‍♂️ How to Run
 Execute the Full System Test
 Run the comprehensive suite using Pytest:
 
 Bash
-pushd \\grafana\Rizone\Projects\links
-
 python -m pytest tests/test_full_flow.py --alluredir=./allure-results
 
 View the Report
 Generate and serve the Allure HTML report:
 
 Bash
-
 %AppData%\npm\allure serve ./allure-results
 allure serve ./allure-results
