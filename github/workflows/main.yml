@@ -1,4 +1,4 @@
-name: Check Automation on GitHub
+name: Selenium Automation Run
 
 on:
   push:
@@ -6,25 +6,43 @@ on:
   workflow_dispatch:
 
 jobs:
-  run-tests:
-    runs-on: ubuntu-latest 
+  automation-job:
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.9'
 
-      - name: Install dependencies
+      - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run Pytest
+      - name: Install Google Chrome
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
+
+      - name: Run Automation Tests
         env:
           RUN_ENV: server
+          GITHUB_ACTIONS: true
+          BUSINESS_URL: "https://my.rishonlezion.muni.il/business/"
+          DAYCARE_URL: "https://my.rishonlezion.muni.il/daycare/"
+          EDUCATION_URL: "https://my.rishonlezion.muni.il/education/"
+          ENFORCEMENT_URL: "https://my.rishonlezion.muni.il/enforcement/"
+          LOGIN_URL: "https://my.rishonlezion.muni.il/#/login"
+          PARKING_URL: "https://my.rishonlezion.muni.il/parking/"
+          STREET_URL: "https://my.rishonlezion.muni.il/street-info/"
+          WATER_URL: "https://my.rishonlezion.muni.il/water/"
+          HOME_URL_PART: "muni.il/"
+          ID_NUMBER= ${{ secrets.ID_NUMBER }}
+          PASSWORD= ${{ secrets.PASSWORD }}
+
         run: |
           pytest tests/test_full_flow.py
