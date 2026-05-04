@@ -20,7 +20,7 @@ class ParkingPage(BasePage):
 
     PAGE_TITLE = (By.TAG_NAME, "h1")
     
-    TAB_3_LOCATOR = (By.XPATH, "//button[contains(text(), 'תווי חניה')]")
+    TAB_3_LOCATOR = (By.XPATH, "//button[normalize-space()='תווי חניה']")
     
     GENERIC_LINK_XPATH = "//*[contains(@role, 'button') or self::a][contains(normalize-space(.), '{}')]"
 

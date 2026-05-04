@@ -46,43 +46,50 @@ logger.setLevel(logging.INFO)
 
 if not logger.handlers:
     formatter = logging.Formatter("%(asctime)s [%(levelname)s] %(message)s")
+    
     file_handler = logging.FileHandler(log_filename, encoding='utf-8')
     file_handler.setFormatter(formatter)
     logger.addHandler(file_handler)
     
+    # Console Handler
     console_handler = logging.StreamHandler(sys.stdout)
     console_handler.setFormatter(formatter)
     logger.addHandler(console_handler)
 
-    loki_handler = LokiHandler(url="http://10.77.72.45:3100/loki/api/v1/push", job_name="links_automation")
+    loki_handler = LokiHandler(url="http://127.0.0.1:3100/loki/api/v1/push", job_name="links_automation")
     loki_handler.setFormatter(formatter)
     logger.addHandler(loki_handler)
 
 logger.propagate = False
 
 def is_running_on_server():
-    """ 
-    פונקציה שבודקת האם אנחנו על השרת. 
-    """
+    """בודק אם הסקריפט רץ על שרת מרוחק או ב-GitHub Actions"""
     server_names = ["SERVER-PROD", "NODE-01"] 
     current_node = platform.node()
-    return current_node in server_names or os.environ.get("RUN_ENV") == "server"
+    return (current_node in server_names or 
+            os.environ.get("RUN_ENV") == "server" or 
+            os.environ.get("GITHUB_ACTIONS") == "true")
 
 @pytest.fixture(scope="session", autouse=True)
 def cleanup_zombies_before_run():
-    """ מנקה שאריות תהליכים בצורה בטוחה לפני תחילת הריצה """
-    if is_running_on_server():
-        logger.info("🧹 Server detected: Cleaning up all Chrome and Driver processes...")
-        os.system("taskkill /f /im chrome.exe /t >nul 2>&1")
+    """ניקוי תהליכי דפדפן תקועים - מותאם לחלונות ולינוקס"""
+    if platform.system() == "Windows":
+        if is_running_on_server():
+            logger.info("🧹 Windows Server detected: Cleaning up all Chrome and Driver processes...")
+            os.system("taskkill /f /im chrome.exe /t >nul 2>&1")
+        else:
+            logger.info("💻 Local Windows PC detected: Cleaning only chromedriver...")
         os.system("taskkill /f /im chromedriver.exe /t >nul 2>&1")
     else:
-        logger.info("💻 Local PC detected: Cleaning only chromedriver to avoid closing personal tabs...")
-        os.system("taskkill /f /im chromedriver.exe /t >nul 2>&1")
+        logger.info("🐧 Linux/GitHub detected: Cleaning up processes using pkill...")
+        os.system("pkill -f chrome || true")
+        os.system("pkill -f chromedriver || true")
     
     time.sleep(1)
 
 @pytest.fixture(scope="session")
 def secrets():
+    """טעינת פרטי גישה מקובץ secrets.json"""
     data = load_secrets()
     if not data:
         logger.error("❌ Error: Could not load secrets.json")
@@ -91,6 +98,7 @@ def secrets():
 
 @pytest.fixture(scope="function")
 def driver():
+    """אתחול ה-WebDriver עם הגדרות אופטימיזציה לריצה מקומית ומרוחקת"""
     logger.info("🌐 Initializing Chrome WebDriver...")
     
     chrome_options = Options()
@@ -99,13 +107,11 @@ def driver():
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--ignore-certificate-errors")
-    
     chrome_options.add_argument("--blink-settings=imagesEnabled=false")
-    
     chrome_options.add_argument("--window-size=1920,1080")
 
     if is_running_on_server():
-        logger.info("🚀 Running in Headless mode (Server Optimization active)")
+        logger.info("🚀 Running in Headless mode (Server/CI Optimization active)")
         chrome_options.add_argument("--headless=new")
     else:
         logger.info("🖥️ Running in Headed mode (Local PC)")
