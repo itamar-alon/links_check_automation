@@ -16,7 +16,7 @@ class EducationPage(BasePage):
     PRIVACY_GUARD_AUTH_BUTTON = "xpath=//button[contains(text(), 'המשך') or contains(text(), 'כניסה') or contains(text(), 'התחבר') or contains(text(), 'הזדהות')]"
     PRIVACY_GUARD_POPUP = ".MuiDialog-container" 
     LOGIN_IFRAME_TAG = "iframe"
-    INTERNAL_TAB_ONLINE_FORMS = "xpath=//*[contains(text(), 'טפסים מקוונים')]"
+    INTERNAL_TAB_ONLINE_FORMS = "button[role='tab']:has-text('טפסים מקוונים')"
 
     
     DEFAULT_TAB_LINKS = {

@@ -48,7 +48,7 @@ def test_education_flow(page: Page, secrets):
             "רישום חינוך על יסודי": education_page.TAB_4,
             "חינוך מיוחד": education_page.TAB_5,
             "תשלומים": education_page.TAB_6,
-            "יצירת קשר": education_page.TAB_7
+            "יצירת קשר אגפי החינוך": education_page.TAB_7
         }
 
         side_tabs = [
@@ -57,7 +57,7 @@ def test_education_flow(page: Page, secrets):
             "רישום חינוך על יסודי",
             "חינוך מיוחד",
             "תשלומים",
-            "יצירת קשר"
+            "יצירת קשר אגפי החינוך"
         ]
         
         for tab in side_tabs:

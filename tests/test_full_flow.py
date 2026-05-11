@@ -88,7 +88,6 @@ def test_full_system_flow(page: Page, secrets):
                 logger.info(f"Testing Education: {url}")
                 edu = EducationPage(page, url)
                 edu.open_education_page()
-                # Use flexible validation or first match
                 try:
                     edu.verify_education_content()
                 except:
@@ -101,11 +100,11 @@ def test_full_system_flow(page: Page, secrets):
                     "רישום חינוך על יסודי": edu.TAB_4,
                     "חינוך מיוחד": edu.TAB_5,
                     "תשלומים": edu.TAB_6,
-                    "יצירת קשר": edu.TAB_7
+                    "יצירת קשר אגפי החינוך": edu.TAB_7
                 }
 
                 edu_tabs = ["תיק תלמיד", "רישום חינוך יסודי", "רישום חינוך על יסודי", 
-                            "חינוך מיוחד", "תשלומים", "יצירת קשר"]
+                            "חינוך מיוחד", "תשלומים", "יצירת קשר אגפי החינוך"]
 
                 for tab in edu_tabs:
                     with allure.step(f"Education Tab: {tab}"):
