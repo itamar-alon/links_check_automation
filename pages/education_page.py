@@ -133,7 +133,7 @@ class EducationPage(BasePage):
             self.page.wait_for_load_state("networkidle")
 
         try:
-            target_element = self.page.get_by_text(tab_name).filter(visible=True).first
+            target_element = self.page.locator(f"text='{tab_name}' >> visible=true").first
             target_element.wait_for(state="visible", timeout=15000)
             target_element.scroll_into_view_if_needed()
             target_element.click()
@@ -175,8 +175,7 @@ class EducationPage(BasePage):
         for attempt in range(2):
             try:
                 self.page.wait_for_load_state("domcontentloaded")
-                # הוספתי פה את אותו פילטר לאלמנטים גלויים בלבד כמו בניווט הרגיל
-                visible_tab = self.page.locator(self.INTERNAL_TAB_ONLINE_FORMS).filter(visible=True).first
+                visible_tab = self.page.locator(f"{self.INTERNAL_TAB_ONLINE_FORMS} >> visible=true").first
                 visible_tab.wait_for(state="visible", timeout=15000)
                 visible_tab.scroll_into_view_if_needed()
                 visible_tab.click()

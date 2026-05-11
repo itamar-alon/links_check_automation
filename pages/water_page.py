@@ -53,7 +53,7 @@ class WaterPage(BasePage):
 
     def __init__(self, page: Page, url: str):
         super().__init__(page)
-        self.DEFAULT_TIMEOUT = 3000  # ms
+        self.DEFAULT_TIMEOUT = 15000 
         self.WATER_URL = url
 
     def open_water_page(self):
@@ -78,7 +78,6 @@ class WaterPage(BasePage):
         locator = self.page.locator(self.GENERIC_LINK_XPATH.format(link_text))
         
         try:
-            # Playwright wait for attachment/visibility
             locator.wait_for(state="attached", timeout=self.DEFAULT_TIMEOUT)
         except Exception:
             logger.error(f"❌ Not Found: {link_text}")
@@ -99,7 +98,6 @@ class WaterPage(BasePage):
 
         if href.startswith("http"):
             try:
-                # Using requests for status check (similar to original logic but integrated with BasePage style)
                 response = requests.get(href, timeout=10, allow_redirects=True, verify=False)
                 
                 if response.status_code == 404:
@@ -127,7 +125,6 @@ class WaterPage(BasePage):
         try:
             tab = self.page.locator(selector)
             tab.wait_for(state="visible", timeout=5000)
-            # Use force=True to ensure click works even if another element overlaps (common in municipality sites)
             tab.click(force=True)
             logger.info(f">>> Switched successfully.")
             self.page.wait_for_timeout(1500)
