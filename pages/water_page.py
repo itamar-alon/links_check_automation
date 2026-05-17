@@ -31,14 +31,13 @@ class WaterPage(BasePage):
 
     TAB_2_LINKS = {
         "נפשות": "form_nefashot.aspx",        
-        "צריכת": "meshutefet",       
-        "הפקדת מפתח": "form_6",  
+        "צריכת מים משותפת": "form_8_zriha_meshutefet.aspx",       
+        "הפקדת מפתח": "form_6_key.aspx",  
         "ביוב": "form_3_pinui_biuv.aspx", 
-        "בירור חיוב": "form_8_zriha_meshutefet.aspx", 
-        "בתעריף מיוחד": "form_5", 
-        "הכרה בתעריף": "form_5_mad_meshuyah.aspx", 
-        "קריאת מונה": "form_6_key.aspx", 
-        "איכות מים": "form_9"
+        "בירור חיוב": "form_7_berur.aspx", 
+        "צריכה חריגה מנזילה": "form_5_mad_meshuyah.aspx", 
+        "מנזילה במערכת המים": "form_4_nezila.aspx",
+        "איכות מים": "form_9_bakasha_eihut_maim.aspx"
     }
 
     TAB_3_LINKS = {
@@ -98,7 +97,7 @@ class WaterPage(BasePage):
 
         if href.startswith("http"):
             try:
-                response = requests.get(href, timeout=10, allow_redirects=True, verify=False)
+                response = requests.get(href, timeout=30, allow_redirects=True, verify=False)
                 
                 if response.status_code == 404:
                     logger.error(f"❌ BROKEN LINK (404) for {link_text}: {href}")
