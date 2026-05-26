@@ -2,6 +2,7 @@ import pytest
 import allure
 import sys
 import logging
+import os
 from datetime import datetime
 from pathlib import Path
 import time
@@ -21,6 +22,16 @@ from pages.water_page import WaterPage
 from pages.parking_page import ParkingPage
 
 logger = logging.getLogger("SystemFlowLogger")
+
+def write_to_github_summary(markdown_text: str):
+    """כותב טקסט ל-GitHub Step Summary במידה והסקריפט רץ ב-GitHub Actions"""
+    summary_file = os.environ.get("GITHUB_STEP_SUMMARY")
+    if summary_file:
+        try:
+            with open(summary_file, "a", encoding="utf-8") as f:
+                f.write(markdown_text + "\n")
+        except Exception as e:
+            logger.error(f"Failed to write to GitHub Summary: {e}")
 
 def capture_failure(page: Page, module_name, screenshot_dir):
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
@@ -242,11 +253,20 @@ def test_full_system_flow(page: Page, secrets):
         
         allure.dynamic.title(f"Full Flow - FAILED (Errors: {len(failures)} | Broken: {count})")
         
+        write_to_github_summary("## ❌ תקלות בריצת האוטומציה\n")
+        write_to_github_summary(f"**נמצאו {len(failures)} מודולים שנכשלו ו-{count} לינקים שבורים.**\n")
+        
         if failures:
+            write_to_github_summary("### 🚨 מודולים שנכשלו:")
+            for f in failures:
+                write_to_github_summary(f"- {f}")
             with allure.step("Module Failures Details"):
                 allure.attach("\n".join(failures), name="Module Exceptions", attachment_type=allure.attachment_type.TEXT)
         
         if count > 0:
+            write_to_github_summary("\n### 🔗 לינקים שבורים:")
+            for link in broken_links:
+                write_to_github_summary(f"- {link}")
             with allure.step(f"Broken Links Details ({count})"):
                 allure.attach("\n".join(broken_links), name="Broken Links List", attachment_type=allure.attachment_type.TEXT)
         
@@ -254,3 +274,6 @@ def test_full_system_flow(page: Page, secrets):
     else:
         logger.info("✅ STATUS: FULL_FLOW_PASSED - All modules and links are OK")
         allure.dynamic.title("Full Flow - PASSED (All modules and links are OK)")
+        
+        write_to_github_summary("## ✅ ריצת האוטומציה עברה בהצלחה\n")
+        write_to_github_summary("כל המודולים והלינקים נבדקו ונמצאו תקינים. 🚀")
