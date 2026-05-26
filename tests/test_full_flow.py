@@ -57,7 +57,7 @@ def send_courier_error_email(env_name, error_message, screenshot_path=None):
     payload = {
         "message": {
             "to": recipients,
-            "template": "K5CCD21M5FMP01K626SRG55C356R",
+            "template": "AX7VYG3310MA1YKV3DFWS657H8PT",
             "data": {
                 "env": env_name,
                 "timestamp": datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
