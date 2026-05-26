@@ -48,6 +48,8 @@ jobs:
           HOME_URL_PART: "muni.il/"
           ID_NUMBER: ${{ secrets.ID_NUMBER }}
           PASSWORD: ${{ secrets.PASSWORD }}
+          COURIER_API_KEY: ${{ secrets.COURIER_API_KEY }}
+          MY_EMAIL: ${{ secrets.MY_EMAIL }}
         run: |
           python -m pytest --alluredir=allure-results tests/test_full_flow.py
 
