@@ -3,6 +3,8 @@ import allure
 import sys
 import logging
 import os
+import base64
+import requests
 from datetime import datetime
 from pathlib import Path
 import time
@@ -32,6 +34,50 @@ def write_to_github_summary(markdown_text: str):
                 f.write(markdown_text + "\n")
         except Exception as e:
             logger.error(f"Failed to write to GitHub Summary: {e}")
+
+def send_courier_error_email(env_name, error_message, screenshot_path=None):
+    courier_token = os.environ.get("COURIER_API_KEY")
+    email_string = os.environ.get("MY_EMAIL")
+    
+    if not courier_token or not email_string:
+        logger.warning("⚠️ Courier credentials missing in env. Skipping email.")
+        return
+
+    screenshot_html = '<p style="color: #999;">לא נוצר צילום מסך עבור ריכוז תקלות</p>'
+    if screenshot_path and os.path.exists(screenshot_path):
+        try:
+            with open(screenshot_path, "rb") as image_file:
+                encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
+                screenshot_html = f'<img src="data:image/png;base64,{encoded_string}" style="max-width:100%; border:1px solid #ccc;">'
+        except Exception as e:
+            logger.error(f"Failed to encode screenshot for email: {e}")
+
+    recipients = [{"email": email.strip()} for email in email_string.split(',')]
+
+    payload = {
+        "message": {
+            "to": recipients,
+            "template": "K5CCD21M5FMP01K626SRG55C356R",
+            "data": {
+                "env": env_name,
+                "timestamp": datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
+                "errorMessage": error_message,
+                "screenshotHtml": screenshot_html
+            }
+        }
+    }
+
+    headers = {
+        "Authorization": f"Bearer {courier_token}",
+        "Content-Type": "application/json"
+    }
+
+    try:
+        response = requests.post("https://api.courier.com/send", json=payload, headers=headers, timeout=10)
+        response.raise_for_status()
+        logger.info("📧 Alert email sent successfully via Courier.")
+    except Exception as e:
+        logger.error(f"❌ Failed to send email via Courier: {e}")
 
 def capture_failure(page: Page, module_name, screenshot_dir):
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
@@ -256,8 +302,11 @@ def test_full_system_flow(page: Page, secrets):
         write_to_github_summary("## ❌ תקלות בריצת האוטומציה\n")
         write_to_github_summary(f"**נמצאו {len(failures)} מודולים שנכשלו ו-{count} לינקים שבורים.**\n")
         
+        email_error_content = ""
+
         if failures:
             write_to_github_summary("### 🚨 מודולים שנכשלו:")
+            email_error_content += "שגיאות במודולים:\n" + "\n".join([f"- {f}" for f in failures]) + "\n\n"
             for f in failures:
                 write_to_github_summary(f"- {f}")
             with allure.step("Module Failures Details"):
@@ -265,10 +314,16 @@ def test_full_system_flow(page: Page, secrets):
         
         if count > 0:
             write_to_github_summary("\n### 🔗 לינקים שבורים:")
+            email_error_content += "לינקים שבורים:\n" + "\n".join([f"- {link}" for link in broken_links])
             for link in broken_links:
                 write_to_github_summary(f"- {link}")
             with allure.step(f"Broken Links Details ({count})"):
                 allure.attach("\n".join(broken_links), name="Broken Links List", attachment_type=allure.attachment_type.TEXT)
+        
+        send_courier_error_email(
+            env_name="GitHub Actions - Full Flow",
+            error_message=email_error_content.replace("\n", "<br>")
+        )
         
         pytest.fail(f"❌ Test finished with errors. Modules: {len(failures)}, Broken Links: {count}")
     else:
